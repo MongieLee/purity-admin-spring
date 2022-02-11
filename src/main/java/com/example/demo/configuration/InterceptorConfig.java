@@ -1,4 +1,4 @@
-package com.example.demo.Configuration;
+package com.example.demo.configuration;
 
 import com.example.demo.interceptors.JWTInterceptor;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JWTInterceptor())
-                .addPathPatterns("/auth/test")
-                .excludePathPatterns("/auth/login");
+                .excludePathPatterns("/auth/**");
     }
 }

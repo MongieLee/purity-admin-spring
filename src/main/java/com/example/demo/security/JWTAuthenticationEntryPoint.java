@@ -17,9 +17,9 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        System.out.println(authException.getMessage());
         PrintWriter writer = response.getWriter();
-        writer.println("{\"code\":403,\"message\":\"请先登录！\",\"data\":null}");
+        writer.println("{\"code\":401,\"message\":\"" + authException.getMessage() + "\",\"data\":null}");
         writer.flush();
-        writer.close();
     }
 }

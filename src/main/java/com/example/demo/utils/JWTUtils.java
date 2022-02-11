@@ -8,7 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Calendar;
 import java.util.Map;
 
-public class JWTUtil {
+public class JWTUtils {
     private final static String SIGN = "baiz!QWE@#$";
 
     /**

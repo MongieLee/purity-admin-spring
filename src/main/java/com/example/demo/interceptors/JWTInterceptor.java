@@ -1,7 +1,6 @@
 package com.example.demo.interceptors;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.demo.utils.JWTUtil;
+import com.example.demo.utils.JWTUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -15,7 +14,7 @@ public class JWTInterceptor implements HandlerInterceptor {
         HashMap<String, Object> map = new HashMap<>();
         String token = request.getHeader("token");
         try {
-            JWTUtil.verify(token);
+            JWTUtils.verify(token);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

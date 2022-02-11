@@ -23,4 +23,19 @@
         from user
         where username = #{username}
     </select>
+    <select id="getPage" resultType="User">
+        select *
+        from user
+    </select>
+    <update id="updateUser" parameterType="User">
+        UPDATE user
+        SET avatar     = #{avatar},
+            updated_at = now()
+        where id = #{id}
+    </update>
+    <delete id="deleteBlog">
+        delete
+        from user
+        where id = #{id}
+    </delete>
 </mapper>

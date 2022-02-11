@@ -3,21 +3,16 @@ package com.example.demo.controller;
 import com.example.demo.entity.LoginResult;
 import com.example.demo.entity.TokenResult;
 import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
+import com.example.demo.entity.UserBuilder;
 import com.example.demo.service.UserServiceImpl;
-import com.example.demo.utils.JWTUtil;
+import com.example.demo.utils.JWTUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,11 +76,13 @@ public class AuthController {
         String password = usernameAndPasswordJson.get("password").toString();
         User user;
         try {
-            User build = User.builder().encryptedPassword(password).username(username).build();
+            User build = UserBuilder.anUser().withUsername(username).withEncryptedPassword(password).build();
             user = userService.login(build);
             System.out.println(user);
         } catch (UsernameNotFoundException e) {
-            return LoginResult.failure("用户不存在");
+            return LoginResult.failure(e.getMessage());
+        } catch (BadCredentialsException e) {
+            return LoginResult.failure(e.getMessage());
         }
 //        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
 //        try {
@@ -98,12 +95,12 @@ public class AuthController {
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
         map.put("password", password);
-        JWTUtil.generateToken(map);
+        JWTUtils.generateToken(map);
 
-        String token = JWTUtil.generateToken(map);
+        String token = JWTUtils.generateToken(map);
         Map<String, String> result = new HashMap<>();
         result.put("token", token);
-        return TokenResult.success("登录成功", new ObjectMapper().writeValueAsString(result));
+        return TokenResult.success("登录成功", result);
     }
 
 

@@ -1,10 +1,12 @@
 package com.example.demo.dao;
 
 import com.example.demo.entity.User;
+import lombok.extern.log4j.Log4j;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -31,11 +33,24 @@ public class UserDao {
         sqlSession.insert("register", user);
     }
 
-    public User findUserById(Integer userId) {
+    public User findUserById(String userId) {
         return sqlSession.selectOne("getUserById", asMap("userId", userId));
     }
 
     public User findUserByUsername(String username) {
         return sqlSession.selectOne("getUserByUsername", asMap("username", username));
+    }
+
+    public User updateUser(User user) {
+        sqlSession.update("updateUser", user);
+        return findUserById(user.getId());
+    }
+
+    public List<User> getList() {
+        return sqlSession.selectList("getPage");
+    }
+
+    public void deleteUser(Integer id) {
+        sqlSession.delete("deleteUser", asMap("id", id));
     }
 }
