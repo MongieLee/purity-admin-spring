@@ -8,6 +8,9 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Calendar;
 import java.util.Map;
 
+/**
+ * JWT工具类
+ */
 public class JWTUtils {
     private final static String SIGN = "baiz!QWE@#$";
 
@@ -18,7 +21,6 @@ public class JWTUtils {
      * @return token 令牌
      */
     public static String generateToken(Map<String, String> map) {
-        // HashMap<String, Object> map = new HashMap<>();
         Calendar instance = Calendar.getInstance();
         instance.add(Calendar.DATE, 7); // 7天过期
         JWTCreator.Builder builder = JWT.create();

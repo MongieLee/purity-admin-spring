@@ -1,16 +1,19 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.User;
+import com.example.demo.model.presistent.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional(propagation = Propagation.SUPPORTS)
 public class AuthService {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
-    public AuthService(UserServiceImpl userService) {
+    public AuthService(UserService userService) {
         this.userService = userService;
     }
 

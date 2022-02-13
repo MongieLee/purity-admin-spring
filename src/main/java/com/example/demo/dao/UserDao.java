@@ -1,14 +1,15 @@
 package com.example.demo.dao;
 
-import com.example.demo.entity.User;
-import lombok.extern.log4j.Log4j;
+import com.example.demo.model.presistent.User;
+import com.example.demo.utils.MappingUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * 用户模块数据持久层
+ */
 @Repository
 public class UserDao {
     private final SqlSession sqlSession;
@@ -17,40 +18,27 @@ public class UserDao {
         this.sqlSession = sqlSession;
     }
 
-    private Map<String, Object> asMap(Object... args) {
-        Map<String, Object> result = new HashMap<>();
-        for (int i = 0; i < args.length; i += 2) {
-            result.put(args[i].toString(), args[i + 1]);
-        }
-        return result;
-    }
-
-    public User login(User user) {
-        return sqlSession.selectOne("login", user);
-    }
-
     public void register(User user) {
         sqlSession.insert("register", user);
     }
 
     public User findUserById(String userId) {
-        return sqlSession.selectOne("getUserById", asMap("userId", userId));
+        return sqlSession.selectOne("getUserById", MappingUtils.asMap("userId", userId));
     }
 
     public User findUserByUsername(String username) {
-        return sqlSession.selectOne("getUserByUsername", asMap("username", username));
+        return sqlSession.selectOne("getUserByUsername", MappingUtils.asMap("username", username));
     }
 
-    public User updateUser(User user) {
+    public void updateUser(User user) {
         sqlSession.update("updateUser", user);
-        return findUserById(user.getId());
     }
 
-    public List<User> getList() {
-        return sqlSession.selectList("getPage");
+    public List<User> getList(User user) {
+        return sqlSession.selectList("getPage", user);
     }
 
     public void deleteUser(Integer id) {
-        sqlSession.delete("deleteUser", asMap("id", id));
+        sqlSession.delete("deleteUser", MappingUtils.asMap("id", id));
     }
 }

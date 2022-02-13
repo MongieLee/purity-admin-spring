@@ -1,7 +1,11 @@
-package com.example.demo.entity;
+package com.example.demo.model.presistent;
 
 import java.time.Instant;
 
+/**
+ * lombok提供的Builder模式，在数据库映射时会出现类型转换错误的Bug
+ * 手动实现User的Builder模式
+ */
 public final class UserBuilder {
     private String id;
     private String username;

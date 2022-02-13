@@ -26,6 +26,9 @@
     <select id="getPage" resultType="User">
         select *
         from user
+        <if test="username != null">
+            where username like concat('%',#{username},'%')
+        </if>
     </select>
     <update id="updateUser" parameterType="User">
         UPDATE user
@@ -33,7 +36,7 @@
             updated_at = now()
         where id = #{id}
     </update>
-    <delete id="deleteBlog">
+    <delete id="deleteUser">
         delete
         from user
         where id = #{id}

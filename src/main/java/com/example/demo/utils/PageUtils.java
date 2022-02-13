@@ -1,8 +1,10 @@
 package com.example.demo.utils;
 
 import com.github.pagehelper.PageHelper;
-import org.springframework.web.context.request.RequestContextHolder;
 
+/**
+ * PageHelper插件工具类
+ */
 public class PageUtils {
     public static void startPage() {
         BaseQuery baseQuery = buildBaseQuery();

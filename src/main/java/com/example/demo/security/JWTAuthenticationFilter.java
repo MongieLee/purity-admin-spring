@@ -17,8 +17,6 @@ import java.util.TreeSet;
 
 @Component
 public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
-//    @Autowired
-//    JWTUtil jwtUtil;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);

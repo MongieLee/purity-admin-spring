@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.example.demo.Menu">
+    <insert id="createMenu" parameterType="Menu">
+        insert into menu
+            (name, path, pid, created_at, updated_at)
+        values (#{name}, #{path}, #{pid}, now(), now())
+    </insert>
+    <update id="updateMenu">
+        update menu
+        set name=#{name},
+            path=#{path},
+            pid=#{pid},
+            updated_at = now()
+        where id = #{id}
+    </update>
+    <select id="getMenuById" resultType="Menu">
+        select *
+        from menu
+        where id = #{id}
+    </select>
+    <select id="getMenuByName" resultType="Menu">
+        select *
+        from menu
+        where name = #{name}
+    </select>
+    <select id="getAll" resultType="Menu">
+        select *
+        from menu
+    </select>
+    <delete id="deleteMenu">
+        delete
+        from menu
+        where id = #{id}
+    </delete>
+</mapper>

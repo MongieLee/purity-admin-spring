@@ -1,6 +1,8 @@
 package com.example.demo.configuration;
 
-import com.example.demo.security.*;
+import com.example.demo.security.JWTAuthenticationFilter;
+import com.example.demo.security.LoginFailureHandler;
+import com.example.demo.security.LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
+/**
+ * Security配置
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -45,10 +50,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 关闭csrf跨域攻击防御
         http.csrf().disable();
 
-        // 登录配置
-        http.formLogin()
-                .successHandler(loginSuccessHandler)
-                .failureHandler(loginFailureHandler);
+        // 表单登录配置
+        // http.formLogin()
+        //        .successHandler(loginSuccessHandler)
+        //        .failureHandler(loginFailureHandler);
 
         // 禁用session
         http.sessionManagement()
