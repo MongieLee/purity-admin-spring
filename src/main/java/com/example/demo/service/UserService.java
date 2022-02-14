@@ -28,7 +28,7 @@ public class UserService {
     /**
      * 更新用户
      *
-     * @param user
+     * @param user 用戶實體
      * @return 用户信息
      */
     public User updateUser(User user) {
@@ -39,7 +39,7 @@ public class UserService {
     /**
      * 根据用户名查询用户
      *
-     * @param username
+     * @param username 用戶名
      * @return 用户信息
      */
     public User getUserByName(String username) {
@@ -49,7 +49,7 @@ public class UserService {
     /**
      * 根据用户id查询用户
      *
-     * @param id
+     * @param id 用戶Id
      * @return 用户信息
      */
     public User getUserById(String id) {
@@ -59,7 +59,7 @@ public class UserService {
     /**
      * 使用账号进行登录
      *
-     * @param user
+     * @param user 用戶实体
      * @return 用户信息
      */
     public User login(User user) {
@@ -68,7 +68,7 @@ public class UserService {
             throw new UsernameNotFoundException(user.getUsername() + "不存在");
         }
         if (!bCryptPasswordEncoder.matches(user.getEncryptedPassword(), targetUser.getEncryptedPassword())) {
-            throw new BadCredentialsException("账号名或密码错误");
+            throw new BadCredentialsException("账号或密码错误");
         }
         return user;
     }
@@ -90,22 +90,21 @@ public class UserService {
     /**
      * 获取用户列表
      *
-     * @param user
-     * @param page
-     * @param pageSize
-     * @return
+     * @param user 用户实体
+     * @param page 第几页
+     * @param pageSize 每页多少条
+     * @return 用户列表结果
      */
     public List<User> getList(User user, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<User> list = userDao.getList(user);
-        return list;
+        return userDao.getList(user);
     }
 
     /**
      * 删除用户
      *
      * @param id 用户Id
-     * @return
+     * @return 用户结果
      */
     public UserResult deleteUser(Integer id) {
         User userById = userDao.findUserById(id.toString());

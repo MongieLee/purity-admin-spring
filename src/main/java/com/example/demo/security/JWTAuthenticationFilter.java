@@ -33,7 +33,6 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         JWTUtils.verify(token);
         DecodedJWT tokenInfo = JWTUtils.getTokenInfo(token);
         String username = tokenInfo.getClaim("username").asString();
-        System.out.println(username);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, null, new TreeSet<>());
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         chain.doFilter(request, response);

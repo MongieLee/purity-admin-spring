@@ -5,7 +5,6 @@ import com.example.demo.model.service.result.BaseListResult;
 import com.example.demo.model.service.result.LoginResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.model.service.result.UserResult;
-import com.example.demo.service.AuthService;
 import com.example.demo.service.UserService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.security.core.Authentication;
@@ -21,11 +20,9 @@ import java.util.List;
 @RequestMapping("/v1/user")
 public class UserController {
     private final UserService userService;
-    private final AuthService authService;
 
-    public UserController(UserService userService, AuthService authService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.authService = authService;
     }
 
     @GetMapping("/info")
@@ -38,7 +35,6 @@ public class UserController {
 
     @PutMapping("/{id}")
     public UserResult updateUser(@PathVariable("id") String id, @RequestBody User user) {
-        System.out.println(id);
         try {
             User dbUser = userService.getUserById(id);
             if (dbUser == null) {

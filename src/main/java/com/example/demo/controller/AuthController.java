@@ -66,11 +66,8 @@ public class AuthController {
         }
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
-        map.put("password", password);
         String token = JWTUtils.generateToken(map);
 
-        Map<String, String> result = new HashMap<>();
-        result.put("token", token);
         return TokenResult.success("登录成功", MappingUtils.asMap("token", token));
     }
 }
