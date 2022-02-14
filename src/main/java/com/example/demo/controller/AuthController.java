@@ -53,7 +53,7 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseBody
-    public Object loggedInUser(@RequestBody Map<String, Object> usernameAndPasswordJson) {
+    public Result loggedInUser(@RequestBody Map<String, Object> usernameAndPasswordJson) {
         String username = usernameAndPasswordJson.get("username").toString();
         String password = usernameAndPasswordJson.get("password").toString();
         User user;

@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.converter.p2s.MenuP2SConverter;
 import com.example.demo.model.presistent.Menu;
 import com.example.demo.model.service.MenuDto;
 import com.example.demo.model.service.result.MenuResult;
@@ -15,11 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/menu")
 public class MenuController {
     private final MenuService menuService;
-    private final MenuP2SConverter menuP2SConverter;
 
-    public MenuController(MenuService menuService, MenuP2SConverter menuP2SConverter) {
+    public MenuController(MenuService menuService) {
         this.menuService = menuService;
-        this.menuP2SConverter = menuP2SConverter;
     }
 
     @PostMapping
@@ -68,7 +65,7 @@ public class MenuController {
     }
 
     @DeleteMapping("/{id}")
-    public Object deleteMenu(@PathVariable("id") Long id) {
+    public Result deleteMenu(@PathVariable("id") Long id) {
         try {
             menuService.deleteMenu(id);
             return MenuResult.success("删除菜单成功", (MenuDto) null);

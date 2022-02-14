@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.dao.UserDao;
 import com.example.demo.model.presistent.User;
 import com.example.demo.model.presistent.UserBuilder;
+import com.example.demo.model.service.result.Result;
 import com.example.demo.model.service.result.UserResult;
 import com.github.pagehelper.PageHelper;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -90,8 +91,8 @@ public class UserService {
     /**
      * 获取用户列表
      *
-     * @param user 用户实体
-     * @param page 第几页
+     * @param user     用户实体
+     * @param page     第几页
      * @param pageSize 每页多少条
      * @return 用户列表结果
      */
@@ -106,7 +107,7 @@ public class UserService {
      * @param id 用户Id
      * @return 用户结果
      */
-    public UserResult deleteUser(Integer id) {
+    public Result deleteUser(Integer id) {
         User userById = userDao.findUserById(id.toString());
         if (userById == null) {
             return UserResult.failure("用户不存在");

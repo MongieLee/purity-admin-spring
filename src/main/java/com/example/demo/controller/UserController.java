@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserResult updateUser(@PathVariable("id") String id, @RequestBody User user) {
+    public Result updateUser(@PathVariable("id") String id, @RequestBody User user) {
         try {
             User dbUser = userService.getUserById(id);
             if (dbUser == null) {
@@ -49,8 +49,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public Object updateUser(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize
-            , @RequestParam(name = "username", required = false) String username) {
+    public Result updateUser(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize, @RequestParam(name = "username", required = false) String username) {
         if (page == null || page < 1) {
             page = 1;
         }
@@ -61,7 +60,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public Object updateUser(@PathVariable("id") Integer id) {
+    public Result updateUser(@PathVariable("id") Integer id) {
         return userService.deleteUser(id);
     }
 }
