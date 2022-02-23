@@ -24,7 +24,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = request.getHeader("token");
+        String token = request.getHeader("Authorization");
         // 相当于匿名访问，配合白名单使用
         if (token == null) {
             chain.doFilter(request, response);
