@@ -19,5 +19,6 @@
     <mappers>
         <mapper resource="db/mybatis/mapper/UserMapper.xml"/>
         <mapper resource="db/mybatis/mapper/MenuMapper.xml"/>
+        <mapper resource="db/mybatis/mapper/ProjectMapper.xml"/>
     </mappers>
 </configuration>

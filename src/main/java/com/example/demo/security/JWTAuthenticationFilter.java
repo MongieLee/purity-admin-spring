@@ -30,6 +30,8 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
             chain.doFilter(request, response);
             return;
         }
+        token = token.substring(7);
+        System.out.println(token);
         JWTUtils.verify(token);
         DecodedJWT tokenInfo = JWTUtils.getTokenInfo(token);
         String username = tokenInfo.getClaim("username").asString();

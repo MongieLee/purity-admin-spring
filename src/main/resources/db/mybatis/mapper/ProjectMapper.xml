@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.example.demo.Project">
+    <insert id="createProject" parameterType="Project">
+        insert into project
+            (name, u_id, created_at, updated_at)
+        values (#{name}, #{uId}, now(), now())
+    </insert>
+    <update id="UpdateProject">
+        update project
+        set name=#{name},
+            updated_at = now()
+        where id = #{id}
+    </update>
+    <select id="getProjectById" resultType="Project">
+        select *
+        from project
+        where id = #{id}
+    </select>
+    <select id="getProjectByName" resultType="Project">
+        select *
+        from project
+        where name = #{name}
+    </select>
+    <select id="getAll" resultType="Project">
+        select *
+        from project
+    </select>
+    <delete id="deleteProject">
+        delete
+        from project
+        where id = #{id}
+    </delete>
+</mapper>

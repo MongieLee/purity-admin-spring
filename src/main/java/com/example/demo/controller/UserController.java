@@ -41,7 +41,7 @@ public class UserController {
                 return UserResult.failure("用户不存在");
             }
             dbUser.setAvatar(user.getAvatar());
-            return UserResult.success(userService.updateUser(dbUser));
+            return UserResult.success("更新用户信息成功",userService.updateUser(dbUser));
         } catch (Exception e) {
             e.printStackTrace();
             return UserResult.failure(e.getMessage());

@@ -13,6 +13,9 @@ public class UserResult {
     public static Result success(String msg) {
         return new Result(ResultEnum.SUCCESSFUL, msg, null);
     }
+    public static Result success(String msg,User user) {
+        return new Result(ResultEnum.SUCCESSFUL, msg, user);
+    }
 
     public static Result failure(String msg) {
         return new Result(ResultEnum.FAILURE, msg, null);

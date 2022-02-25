@@ -66,7 +66,7 @@ public class UserService {
     public User login(User user) {
         User targetUser = getUserByName(user.getUsername());
         if (targetUser == null) {
-            throw new UsernameNotFoundException(user.getUsername() + "不存在");
+            throw new UsernameNotFoundException("用户" + user.getUsername() + "不存在");
         }
         if (!bCryptPasswordEncoder.matches(user.getEncryptedPassword(), targetUser.getEncryptedPassword())) {
             throw new BadCredentialsException("账号或密码错误");
