@@ -4,15 +4,9 @@
 <mapper namespace="cn.example.demo.Project">
     <insert id="createProject" parameterType="Project">
         insert into project
-            (name, u_id, created_at, updated_at)
-        values (#{name}, #{uId}, now(), now())
+            (name, user_id, created_at, updated_at)
+        values (#{name}, #{userId}, now(), now())
     </insert>
-    <update id="UpdateProject">
-        update project
-        set name=#{name},
-            updated_at = now()
-        where id = #{id}
-    </update>
     <select id="getProjectById" resultType="Project">
         select *
         from project
@@ -27,6 +21,25 @@
         select *
         from project
     </select>
+    <select id="getProjectsByPage" resultType="Project">
+        select *
+        from project
+        <where>
+            <if test="name != null">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+
+    </select>
+    <update id="UpdateProject">
+        update project
+        set name       = #{name},
+            updated_at = now()
+        where id = #{id}
+    </update>
     <delete id="deleteProject">
         delete
         from project

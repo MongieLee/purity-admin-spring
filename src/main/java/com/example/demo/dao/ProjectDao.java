@@ -31,8 +31,8 @@ public class ProjectDao {
         sqlSession.insert("createProject", project);
     }
 
-    public List<Project> getAll() {
-        return sqlSession.selectList("getAll");
+    public List<Project> getList(Project project) {
+        return sqlSession.selectList("getProjectsByPage",project);
     }
 
     public void updateProject(Project project) {

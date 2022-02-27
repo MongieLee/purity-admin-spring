@@ -2,7 +2,7 @@ create table project
 (
     id         int primary key auto_increment,
     name       varchar(20),
-    u_id        int,
+    user_id        int,
     created_at datetime,
     updated_at datetime,
     UNIQUE (name)

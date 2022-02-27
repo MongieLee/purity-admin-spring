@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dao.ProjectDao;
 import com.example.demo.model.presistent.Project;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +19,10 @@ public class ProjectService {
         this.projectDao = projectDao;
     }
 
-    public List<Project> getAllProject() {
-        return projectDao.getAll();
+    public List<Project> getList(Project project,Integer page,Integer pageSize)
+    {
+        PageHelper.startPage(page,pageSize);
+        return projectDao.getList(project);
     }
 
     public Project updateProject(Long id, Project project) {

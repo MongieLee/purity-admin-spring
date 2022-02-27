@@ -7,7 +7,7 @@ import java.time.Instant;
  * 手动实现User的Builder模式
  */
 public final class UserBuilder {
-    private String id;
+    private Long id;
     private String username;
     private String encryptedPassword;
     private Instant createdAt;
@@ -21,7 +21,7 @@ public final class UserBuilder {
         return new UserBuilder();
     }
 
-    public UserBuilder withId(String id) {
+    public UserBuilder withId(Long id) {
         this.id = id;
         return this;
     }

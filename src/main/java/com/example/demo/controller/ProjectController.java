@@ -1,11 +1,14 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.presistent.Project;
-import com.example.demo.model.service.result.MenuResult;
+import com.example.demo.model.service.result.BaseListResult;
 import com.example.demo.model.service.result.ProjectResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.service.ProjectService;
+import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 菜单模块
@@ -21,6 +24,7 @@ public class ProjectController {
 
     @PostMapping
     public Result createProject(@RequestBody Project project) {
+        System.out.println(project.toString());
         try {
             Project projectByName = projectService.getProjectByName(project.getName());
             if (projectByName != null) {
@@ -32,6 +36,18 @@ public class ProjectController {
             e.printStackTrace();
             return ProjectResult.failure(e.getMessage());
         }
+    }
+
+    @GetMapping
+    public Result getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
+                          @RequestParam(name = "name", required = false) String name, @RequestParam(name = "userId",required = false) Long userId) {
+        if (page == null || page < 1) {
+            page = 1;
+        }
+        Project project = new Project().setName(name).setUserId(userId);
+        List<Project> list = projectService.getList(project, page, pageSize);
+        PageInfo<Project> projectPageInfo = new PageInfo<>(list);
+        return BaseListResult.success(list, projectPageInfo.getTotal());
     }
 
     @GetMapping("/{id}")

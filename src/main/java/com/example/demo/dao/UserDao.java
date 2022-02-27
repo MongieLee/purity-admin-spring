@@ -22,7 +22,7 @@ public class UserDao {
         sqlSession.insert("register", user);
     }
 
-    public User findUserById(String userId) {
+    public User findUserById(Long userId) {
         return sqlSession.selectOne("getUserById", MappingUtils.asMap("userId", userId));
     }
 
@@ -38,7 +38,7 @@ public class UserDao {
         return sqlSession.selectList("getPage", user);
     }
 
-    public void deleteUser(Integer id) {
+    public void deleteUser(Long id) {
         sqlSession.delete("deleteUser", MappingUtils.asMap("id", id));
     }
 }

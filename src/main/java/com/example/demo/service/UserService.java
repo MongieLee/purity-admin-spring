@@ -53,7 +53,7 @@ public class UserService {
      * @param id 用戶Id
      * @return 用户信息
      */
-    public User getUserById(String id) {
+    public User getUserById(Long id) {
         return userDao.findUserById(id);
     }
 
@@ -107,8 +107,8 @@ public class UserService {
      * @param id 用户Id
      * @return 用户结果
      */
-    public Result deleteUser(Integer id) {
-        User userById = userDao.findUserById(id.toString());
+    public Result deleteUser(Long id) {
+        User userById = userDao.findUserById(id);
         if (userById == null) {
             return UserResult.failure("用户不存在");
         }
