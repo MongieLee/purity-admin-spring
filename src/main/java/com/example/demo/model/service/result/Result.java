@@ -9,12 +9,14 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class Result {
-    ResultEnum status;
     String msg;
     Object data;
+    Boolean success;
+    Integer code;
 
-    public Result(ResultEnum status, String msg, Object data) {
-        this.status = status;
+    public Result(Integer code, Boolean success, String msg, Object data) {
+        this.success = success;
+        this.code = code;
         this.msg = msg;
         this.data = data;
     }

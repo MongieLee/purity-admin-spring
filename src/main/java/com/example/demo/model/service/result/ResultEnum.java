@@ -7,7 +7,7 @@ public enum ResultEnum {
     SUCCESSFUL("success"),
     FAILURE("failure");
 
-    private String status;
+    private final String status;
 
     public String getStatus() {
         return status;

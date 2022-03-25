@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class MenuResult {
     public static Result success(String msg, MenuDto menu) {
-        return new Result(ResultEnum.SUCCESSFUL, msg, menu);
+        return new Result(200, true, msg, menu);
     }
 
     public static Result success(String msg, List<MenuDto> menuList) {
-        return new Result(ResultEnum.SUCCESSFUL, msg, menuList);
+        return new Result(200, true, msg, menuList);
     }
 
     public static Result failure(String msg) {
-        return new Result(ResultEnum.FAILURE, msg, null);
+        return new Result(400, false, msg, null);
     }
 }

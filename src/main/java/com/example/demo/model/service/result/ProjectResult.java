@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class ProjectResult {
     public static Result success(String msg, Project project) {
-        return new Result(ResultEnum.SUCCESSFUL, msg, project);
+        return new Result(200, true, msg, project);
     }
 
     public static Result success(String msg, List<Project> menuList) {
-        return new Result(ResultEnum.SUCCESSFUL, msg, menuList);
+        return new Result(200, true, msg, menuList);
     }
 
     public static Result failure(String msg) {
-        return new Result(ResultEnum.FAILURE, msg, null);
+        return new Result(400, false, null, null);
     }
 }

@@ -7,17 +7,18 @@ import com.example.demo.model.presistent.User;
  */
 public class UserResult {
     public static Result success(User user) {
-        return new Result(ResultEnum.SUCCESSFUL, null, user);
+        return new Result(200, true, null, user);
     }
 
     public static Result success(String msg) {
-        return new Result(ResultEnum.SUCCESSFUL, msg, null);
+        return new Result(200, true, msg, null);
     }
-    public static Result success(String msg,User user) {
-        return new Result(ResultEnum.SUCCESSFUL, msg, user);
+
+    public static Result success(String msg, User user) {
+        return new Result(200, true, msg, user);
     }
 
     public static Result failure(String msg) {
-        return new Result(ResultEnum.FAILURE, msg, null);
+        return new Result(400, false, msg, null);
     }
 }

@@ -5,6 +5,6 @@ package com.example.demo.model.service.result;
  */
 public class TokenResult {
     public static Result success(String msg, Object obj) {
-        return new Result(ResultEnum.SUCCESSFUL, msg, obj);
+        return new Result(200, true, msg, obj);
     }
 }

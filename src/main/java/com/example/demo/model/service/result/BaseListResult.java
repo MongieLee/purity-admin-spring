@@ -20,6 +20,6 @@ public class BaseListResult {
     }
 
     public static Result success(List records, Long total) {
-        return new Result(ResultEnum.SUCCESSFUL, "获取列表成功", new BaseListResult(total, records));
+        return new Result(200, true, "获取列表成功", new BaseListResult(total, records));
     }
 }
