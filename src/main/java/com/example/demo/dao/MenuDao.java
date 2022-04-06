@@ -31,7 +31,7 @@ public class MenuDao {
     }
 
     public List<Menu> getAll() {
-        return sqlSession.selectList("getAll");
+        return sqlSession.selectList("cn.example.demo.Menu.getAll");
     }
 
     public void updateMenu(Menu menu) {
@@ -40,5 +40,9 @@ public class MenuDao {
 
     public void deleteMenu(Long id) {
         sqlSession.delete("deleteMenu", MappingUtils.asMap("id", id));
+    }
+
+    public Integer findMaxSequence(){
+        return sqlSession.selectOne("findMaxSequence");
     }
 }

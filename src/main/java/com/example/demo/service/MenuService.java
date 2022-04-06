@@ -56,6 +56,7 @@ public class MenuService {
     }
 
     public MenuDto createMenu(Menu menu) {
+        menu.setSequence(menuDao.findMaxSequence() + 1);
         menuDao.createMenu(menu);
         return findById(menu.getId());
     }
@@ -75,7 +76,7 @@ public class MenuService {
                 result = menu;
             }
             for (MenuDto m : menuList) {
-                if (menu.getId() == m.getPid()) {
+                if (menu.getId() == m.getPId()) {
                     menu.getChildren().add(m);
                 }
             }
@@ -99,11 +100,12 @@ public class MenuService {
         List<MenuDto> treeResult = new ArrayList<>();
         for (MenuDto menu : menuList) {
             for (MenuDto m : menuList) {
-                if (menu.getId() == m.getPid()) {
+                if (menu.getId() == m.getPId()) {
+                    m.setParentName(menu.getName());
                     menu.getChildren().add(m);
                 }
             }
-            if (menu.getPid() == null) {
+            if (menu.getPId() == null) {
                 treeResult.add(menu);
             }
         }

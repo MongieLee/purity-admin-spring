@@ -20,7 +20,8 @@ public class Menu {
     private Long id;
     private String name;
     private String path;
-    private Long pid;
+    private Long pId;
+    private Integer sequence;
     private Instant createdAt;
     private Instant updatedAt;
 }

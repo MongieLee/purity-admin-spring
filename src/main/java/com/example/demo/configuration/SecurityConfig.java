@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 配置白名单
         http.authorizeRequests()
-                .antMatchers("/", "/v1/auth/**").permitAll()
+                .antMatchers("/", "/uploadFiles/**","/api/v1/auth/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilter(authenticationFilter());

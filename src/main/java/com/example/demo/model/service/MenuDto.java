@@ -14,14 +14,16 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@Accessors(chain = true) // 自动生成的setter方法返回当前this
+@Accessors(chain = true)
 @ToString
 @AllArgsConstructor
 public class MenuDto {
     private Long id;
     private String name;
     private String path;
-    private Long pid;
+    private Long pId;
+    private String parentName;
+    private Integer sequence;
     private Instant createdAt;
     private Instant updatedAt;
     private List<MenuDto> children;

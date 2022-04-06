@@ -42,11 +42,13 @@ public class CorsConfig implements WebMvcConfigurer {
 
     /**
      * JWT拦截器，使用拦截器会影响执行执行顺序导致addCorsMappings配置跨域失效，需要把跨域配置写再corsFilter中
+     *
      * @param registry
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JWTInterceptor())
-                .excludePathPatterns("/v1/auth/**");
+                .excludePathPatterns("/api/v1/auth/**")
+                .excludePathPatterns("/uploadFiles/**");
     }
 }

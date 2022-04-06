@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * 菜单模块
  */
 @RestController
-@RequestMapping("/v1/menu")
+@RequestMapping("/api/v1/menu")
 public class MenuController {
     private final MenuService menuService;
 
