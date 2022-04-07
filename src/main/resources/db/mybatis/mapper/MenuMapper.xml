@@ -4,14 +4,15 @@
 <mapper namespace="cn.example.demo.Menu">
     <insert id="createMenu" parameterType="Menu">
         insert into menu
-            (name, path, p_id, created_at, updated_at)
-        values (#{name}, #{path}, #{pId}, now(), now())
+            (name, path, parent_id, sequence, created_at, updated_at)
+        values (#{name}, #{path}, #{parentId}, #{sequence}, now(), now())
     </insert>
-    <update id="updateMenu">
+    <update id="updateMenu" parameterType="Menu">
         update menu
         set name=#{name},
             path=#{path},
-            p_id=#{pId},
+            parent_id=#{parentId},
+            sequence=#{sequence},
             updated_at = now()
         where id = #{id}
     </update>
@@ -35,6 +36,18 @@
         where id = #{id}
     </delete>
     <select id="findMaxSequence" resultType="Integer">
-        select count(sequence) from menu
+        select max(sequence)
+        from menu
+    </select>
+    <select id="getSibling" parameterType="Menu" resultType="Menu">
+        select * from menu
+        <where>
+            <if test="parentId == null">
+                parent_id is null
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId}
+            </if>
+        </where>
     </select>
 </mapper>

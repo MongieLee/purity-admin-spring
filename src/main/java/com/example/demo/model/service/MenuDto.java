@@ -21,7 +21,7 @@ public class MenuDto {
     private Long id;
     private String name;
     private String path;
-    private Long pId;
+    private Long parentId;
     private String parentName;
     private Integer sequence;
     private Instant createdAt;

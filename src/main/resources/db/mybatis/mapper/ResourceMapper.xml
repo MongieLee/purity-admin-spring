@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.example.demo.Resource">
+    <insert id="createResource" parameterType="Resource">
+        insert into resource
+            (name, url, description, categroy_id, created_at, updated_at)
+        values (#{name}, #{url}, #{description}, #{categroyId}, now(), now())
+    </insert>
+    <update id="updateResource" parameterType="Resource">
+        update resource
+        set name=#{name},
+            url=#{url},
+            description=#{description},
+            categroy_id=#{categroyId},
+            updated_at = now()
+        where id = #{id}
+    </update>
+    <select id="getResourceById" resultType="Resource">
+        select *
+        from resource
+        where id = #{id}
+    </select>
+    <select id="getResourceByName" resultType="Resource">
+        select *
+        from resource
+        where name = #{name}
+    </select>
+    <select id="getAll" resultType="Resource">
+        select *
+        from resource
+    </select>
+    <delete id="deleteResource">
+        delete
+        from resource
+        where id = #{id}
+    </delete>
+    <select id="getList" resultType="Resource">
+        select *
+        from resource
+        <if test="name != null">
+            where name like concat('%',#{name},'%')
+        </if>
+        <if test="url != null">
+            where url like concat('%',#{url},'%')
+        </if>
+    </select>
+</mapper>

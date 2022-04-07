@@ -4,12 +4,12 @@ import com.example.demo.converter.p2s.MenuP2SConverter;
 import com.example.demo.dao.MenuDao;
 import com.example.demo.model.presistent.Menu;
 import com.example.demo.model.service.MenuDto;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +33,21 @@ public class MenuService {
     }
 
     public MenuDto updateMenu(Long id, Menu menu) {
-        if (findById(id) == null) {
+        MenuDto byId = findById(id);
+        if (byId == null) {
             throw new RuntimeException("菜单不存在");
+        }
+        if (menu.getParentId() != byId.getParentId()) {
+            List<Menu> sibling = menuDao.getSibling(menu);
+            Integer sequence = 0;
+            if (sibling.size() > 0) {
+                for (Menu item : sibling) {
+                    if (item.getSequence() >= sequence) {
+                        sequence = item.getSequence() + 1;
+                    }
+                }
+            }
+            menu.setSequence(0 == sequence ? 0 : sequence);
         }
         menuDao.updateMenu(menu.setId(id));
         return getMenuById(menu.getId());
@@ -46,7 +59,7 @@ public class MenuService {
             throw new RuntimeException("菜单不存在");
         }
         if (menuById.getChildren().size() > 0) {
-            throw new RuntimeException("删除失败，请先删除该菜单下的子级菜单");
+            throw new RuntimeException("删除失败，请先删除【" + menuById.getName() + "】菜单下的子级菜单");
         }
         menuDao.deleteMenu(id);
     }
@@ -56,7 +69,16 @@ public class MenuService {
     }
 
     public MenuDto createMenu(Menu menu) {
-        menu.setSequence(menuDao.findMaxSequence() + 1);
+        List<Menu> sibling = menuDao.getSibling(menu);
+        Integer sequence = 0;
+        if (sibling.size() > 0) {
+            for (Menu item : sibling) {
+                if (item.getSequence() >= sequence) {
+                    sequence = item.getSequence() + 1;
+                }
+            }
+        }
+        menu.setSequence(0 == sequence ? 0 : sequence);
         menuDao.createMenu(menu);
         return findById(menu.getId());
     }
@@ -76,7 +98,7 @@ public class MenuService {
                 result = menu;
             }
             for (MenuDto m : menuList) {
-                if (menu.getId() == m.getPId()) {
+                if (menu.getId() == m.getParentId()) {
                     menu.getChildren().add(m);
                 }
             }
@@ -100,15 +122,87 @@ public class MenuService {
         List<MenuDto> treeResult = new ArrayList<>();
         for (MenuDto menu : menuList) {
             for (MenuDto m : menuList) {
-                if (menu.getId() == m.getPId()) {
+                if (menu.getId() == m.getParentId()) {
                     m.setParentName(menu.getName());
                     menu.getChildren().add(m);
                 }
             }
-            if (menu.getPId() == null) {
+            if (menu.getChildren().size() != 0) {
+                Collections.sort(menu.getChildren(), Comparator.comparingInt(MenuDto::getSequence));
+            }
+            if (menu.getParentId() == null) {
                 treeResult.add(menu);
             }
         }
+        treeResult.sort((Comparator.comparingInt(MenuDto::getSequence)));
         return treeResult;
+    }
+
+    public List<Menu> getSibling(Menu menu) {
+        return menuDao.getSibling(menu);
+    }
+
+    public void moveUp(Menu menu) {
+        List<Menu> sibling = menuDao.getSibling(menu);
+        sibling.sort(Comparator.comparingInt(Menu::getSequence));
+        if (sibling.get(0).getId() == menu.getId()) {
+            throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是第一位");
+        }
+        Integer target = null;
+        Menu replace = null;
+        for (int i = 0; i < sibling.size(); i++) {
+            Menu record = sibling.get(i);
+            if (record.getId() == menu.getId()) {
+                target = menu.getSequence();
+                replace = sibling.get(i - 1);
+            }
+        }
+        menu.setSequence(Objects.requireNonNull(replace).getSequence());
+        replace.setSequence(target);
+        menuDao.updateMenu(replace);
+        menuDao.updateMenu(menu);
+    }
+
+    public void moveDown(Menu menu) {
+        List<Menu> sibling = menuDao.getSibling(menu);
+        sibling.sort((o1, o2) -> o2.getSequence() - o1.getSequence());
+        if (sibling.get(0).getId() == menu.getId()) {
+            throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是最后一位");
+        }
+        Integer target = null;
+        Menu replace = null;
+        for (int i = 0; i < sibling.size(); i++) {
+            Menu record = sibling.get(i);
+            if (record.getId() == menu.getId()) {
+                target = menu.getSequence();
+                replace = sibling.get(i - 1);
+            }
+        }
+        menu.setSequence(Objects.requireNonNull(replace).getSequence());
+        replace.setSequence(target);
+        menuDao.updateMenu(replace);
+        menuDao.updateMenu(menu);
+    }
+
+    public void moveToStar(Menu menu) {
+        List<Menu> sibling = menuDao.getSibling(menu);
+        sibling.sort(Comparator.comparingInt(Menu::getSequence));
+        Menu first = sibling.get(0);
+        if (first.getId() == menu.getId()) {
+            throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是第一位");
+        }
+        menuDao.updateMenu(menu.setSequence(first.getSequence() - 1));
+
+    }
+
+    public void moveToEnd(Menu menu) {
+        List<Menu> sibling = menuDao.getSibling(menu);
+        sibling.sort(Comparator.comparingInt(Menu::getSequence));
+        Collections.reverse(sibling);
+        Menu first = sibling.get(0);
+        if (first.getId() == menu.getId()) {
+            throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是最后一位");
+        }
+        menuDao.updateMenu(menu.setSequence(first.getSequence() + 1));
     }
 }

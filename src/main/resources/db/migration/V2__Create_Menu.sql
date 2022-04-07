@@ -3,7 +3,7 @@ create table menu
     id         int primary key auto_increment,
     name       varchar(20),
     path       varchar(20),
-    p_id       int,
+    parent_id       int,
     sequence   int default 0,
     created_at datetime,
     updated_at datetime,

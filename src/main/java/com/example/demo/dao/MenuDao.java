@@ -42,7 +42,11 @@ public class MenuDao {
         sqlSession.delete("deleteMenu", MappingUtils.asMap("id", id));
     }
 
-    public Integer findMaxSequence(){
+    public Integer findMaxSequence() {
         return sqlSession.selectOne("findMaxSequence");
+    }
+
+    public List<Menu> getSibling(Menu menu) {
+        return sqlSession.selectList("cn.example.demo.Menu.getSibling", menu);
     }
 }

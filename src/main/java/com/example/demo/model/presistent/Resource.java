@@ -14,14 +14,14 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true) // 生成的setter方法返回当前this
+@Accessors(chain = true)
 @ToString
-public class Menu {
+public class Resource {
     private Long id;
     private String name;
-    private String path;
-    private Long parentId;
-    private Integer sequence;
+    private String url;
+    private String description;
+    private Long categroyId;
     private Instant createdAt;
     private Instant updatedAt;
 }

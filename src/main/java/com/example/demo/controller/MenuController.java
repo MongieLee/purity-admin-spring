@@ -1,10 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.converter.p2s.MenuP2SConverter;
 import com.example.demo.model.presistent.Menu;
 import com.example.demo.model.service.MenuDto;
 import com.example.demo.model.service.result.MenuResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.service.MenuService;
+import lombok.val;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -14,9 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/menu")
 public class MenuController {
     private final MenuService menuService;
+    private final MenuP2SConverter menuP2SConverter;
 
-    public MenuController(MenuService menuService) {
+    public MenuController(MenuService menuService, MenuP2SConverter menuP2SConverter) {
         this.menuService = menuService;
+        this.menuP2SConverter = menuP2SConverter;
     }
 
     @PostMapping
@@ -74,4 +78,52 @@ public class MenuController {
             return MenuResult.failure(e.getMessage());
         }
     }
+
+    @PostMapping("/moveUp/{id}")
+    public Result moveUp(@PathVariable("id") Long id) {
+        try {
+            menuService.moveUp(menuP2SConverter.reverse().convert(menuService.getMenuById(id)));
+            return MenuResult.success("上移成功", (MenuDto) null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MenuResult.failure(e.getMessage());
+        }
+    }
+
+    @PostMapping("/moveDown/{id}")
+    public Result moveDown(@PathVariable("id") Long id) {
+        try {
+            menuService.moveDown(menuP2SConverter.reverse().convert(menuService.getMenuById(id)));
+            return MenuResult.success("下移成功", (MenuDto) null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MenuResult.failure(e.getMessage());
+        }
+    }
+
+
+    @PostMapping("/moveToStar/{id}")
+    public Result moveToStar(@PathVariable("id") Long id) {
+        try {
+            val byId = menuService.getMenuById(id);
+            menuService.moveToStar(menuP2SConverter.reverse().convert(byId));
+            return MenuResult.success("已将菜单【" + byId.getName() + "】移至当前层级第一位", (MenuDto) null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MenuResult.failure(e.getMessage());
+        }
+    }
+
+    @PostMapping("/moveToEnd/{id}")
+    public Result moveToEnd(@PathVariable("id") Long id) {
+        try {
+            val byId = menuService.getMenuById(id);
+            menuService.moveToEnd(menuP2SConverter.reverse().convert(byId));
+            return MenuResult.success("已将菜单【" + byId.getName() + "】移至当前层级最后一位", (MenuDto) null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MenuResult.failure(e.getMessage());
+        }
+    }
+
 }
