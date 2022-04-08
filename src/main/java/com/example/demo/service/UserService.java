@@ -115,4 +115,13 @@ public class UserService {
         userDao.deleteUser(id);
         return UserResult.success("删除成功");
     }
+
+    public Result changeStatus(byte status, Long userId) {
+        User userById = userDao.findUserById(userId);
+        if (userById == null) {
+            return UserResult.failure("用户不存在");
+        }
+        userDao.changeStatus(status, userId);
+        return UserResult.success("用户【" + userById.getUsername() + "】账号状态修改成功");
+    }
 }

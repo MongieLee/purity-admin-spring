@@ -51,12 +51,14 @@ public class ResourceController {
 
     @GetMapping("/list")
     public Result getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
-                          @RequestParam(name = "name", required = false) String name, @RequestParam(name = "url", required = false) String url) {
+                          @RequestParam(name = "name", required = false) String name, @RequestParam(name = "url", required = false) String url,
+                          @RequestParam(name = "categroyId", required = false) Long categroyId) {
         if (page == null || page < 1) {
             page = 1;
         }
-        val resource = new Resource().setName(name).setUrl(url);
+        val resource = new ResourceDto().setName(name).setUrl(url).setCategroyId(categroyId);
         List<ResourceDto> list = resourceService.getList(resource, page, pageSize);
+
         PageInfo<ResourceDto> resourcePageInfo = new PageInfo<>(list);
         return BaseListResult.success(list, resourcePageInfo.getTotal());
     }

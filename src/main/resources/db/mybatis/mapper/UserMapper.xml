@@ -10,8 +10,8 @@
     </select>
     <insert id="register" parameterType="User">
         insert into user
-            (username, encrypted_password, created_at, updated_at)
-        values (#{username}, #{encryptedPassword}, now(), now())
+            (username, encrypted_password, status, created_at, updated_at)
+        values (#{username}, #{encryptedPassword}, 1, now(), now())
     </insert>
     <select id="getUserById" resultType="User">
         select *
@@ -41,4 +41,9 @@
         from user
         where id = #{id}
     </delete>
+    <update id="changeStatus">
+        update user
+        set status = #{status}
+        where id = #{userId};
+    </update>
 </mapper>

@@ -20,6 +20,7 @@ public class User {
     private String username;
     @JsonIgnore
     private String encryptedPassword;
+    private Boolean status;
     private Instant createdAt;
     private Instant updatedAt;
     private String avatar;

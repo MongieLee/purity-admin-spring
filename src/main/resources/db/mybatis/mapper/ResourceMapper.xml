@@ -35,14 +35,20 @@
         from resource
         where id = #{id}
     </delete>
-    <select id="getList" resultType="Resource">
-        select *
-        from resource
-        <if test="name != null">
-            where name like concat('%',#{name},'%')
-        </if>
-        <if test="url != null">
-            where url like concat('%',#{url},'%')
-        </if>
+    <select id="getList" resultType="ResourceDto">
+        select r.id,r.`name`,r.url,r.description,r.categroy_id,m.name as categroy_name
+        ,r.created_at,r.updated_at
+        from resource r left join menu m on r.categroy_id = m.id
+        <where>
+            <if test="name != null">
+                r.`name` like concat('%',#{name},'%')
+            </if>
+            <if test="url != null">
+                and url like concat('%',#{url},'%')
+            </if>
+            <if test="categroyId != null">
+                and categroy_id = #{categroyId}
+            </if>
+        </where>
     </select>
 </mapper>

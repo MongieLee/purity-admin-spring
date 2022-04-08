@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import com.example.demo.model.presistent.Resource;
+import com.example.demo.model.service.ResourceDto;
 import com.example.demo.utils.MappingUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
@@ -47,7 +48,8 @@ public class ResourceDao {
         sqlSession.delete(getMapperName("deleteResource"), MappingUtils.asMap("id", id));
     }
 
-    public List<Resource> getList(Resource resource) {
+    public List<ResourceDto> getList(ResourceDto resource) {
+        System.out.println(resource);
         return sqlSession.selectList(getMapperName("getList"), resource);
     }
 }

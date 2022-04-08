@@ -41,4 +41,8 @@ public class UserDao {
     public void deleteUser(Long id) {
         sqlSession.delete("deleteUser", MappingUtils.asMap("id", id));
     }
+
+    public void changeStatus(byte status, Long userId) {
+        sqlSession.update("changeStatus", MappingUtils.asMap("status", status, "userId", userId));
+    }
 }

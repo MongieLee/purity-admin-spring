@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,16 +41,18 @@ public class ResourceService {
         return resourceP2SConverter.convert(resourceDao.getResourceByName(name));
     }
 
-    public List<ResourceDto> getList(Resource resource, Integer page, Integer pageSize) {
+    public List<ResourceDto> getList(ResourceDto resource, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
-        List<ResourceDto> collect = resourceDao.getList(resource).stream()
-                .map(item -> {
-                    val convert = resourceP2SConverter.convert(item);
-                    val menuById = menuDao.getMenuById(convert.getCategroyId());
-                    convert.setCategroyName(menuById.getName());
-                    return convert;
-                }).collect(Collectors.toList());
-        return collect;
+        return resourceDao.getList(resource);
+//                .stream()
+//                .map(item -> {
+//                    val convert = resourceP2SConverter.convert(item);
+//                    val menuById = menuDao.getMenuById(convert.getCategroyId());
+//                    convert.setCategroyName(menuById.getName());
+//                    return convert;
+//                }).collect(Collectors.toList());
+//        return collect;
+//        return result;
     }
 
     public ResourceDto getResourceById(Long id) {
