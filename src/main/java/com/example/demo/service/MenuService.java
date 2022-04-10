@@ -47,7 +47,7 @@ public class MenuService {
                     }
                 }
             }
-            menu.setSequence(0 == sequence ? 0 : sequence);
+            menu.setSequence(sequence);
         }
         menuDao.updateMenu(menu.setId(id));
         return getMenuById(menu.getId());
@@ -78,7 +78,7 @@ public class MenuService {
                 }
             }
         }
-        menu.setSequence(0 == sequence ? 0 : sequence);
+        menu.setSequence(sequence);
         menuDao.createMenu(menu);
         return findById(menu.getId());
     }
@@ -90,7 +90,7 @@ public class MenuService {
         MenuDto result = null;
         List<MenuDto> menuList = menuDao.getAll()
                 .stream()
-                .map(menu -> menuP2SConverter.convert(menu))
+                .map(menuP2SConverter::convert)
                 .collect(Collectors.toList());
 
         for (MenuDto menu : menuList) {
@@ -113,7 +113,7 @@ public class MenuService {
     public List<MenuDto> tree() {
         List<MenuDto> collect = menuDao.getAll()
                 .stream()
-                .map(menu -> menuP2SConverter.convert(menu))
+                .map(menuP2SConverter::convert)
                 .collect(Collectors.toList());
         return convertTree(collect);
     }
@@ -128,7 +128,7 @@ public class MenuService {
                 }
             }
             if (menu.getChildren().size() != 0) {
-                Collections.sort(menu.getChildren(), Comparator.comparingInt(MenuDto::getSequence));
+                menu.getChildren().sort(Comparator.comparingInt(MenuDto::getSequence));
             }
             if (menu.getParentId() == null) {
                 treeResult.add(menu);
@@ -145,7 +145,7 @@ public class MenuService {
     public void moveUp(Menu menu) {
         List<Menu> sibling = menuDao.getSibling(menu);
         sibling.sort(Comparator.comparingInt(Menu::getSequence));
-        if (sibling.get(0).getId() == menu.getId()) {
+        if (Objects.equals(sibling.get(0).getId(), menu.getId())) {
             throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是第一位");
         }
         Integer target = null;
@@ -205,4 +205,5 @@ public class MenuService {
         }
         menuDao.updateMenu(menu.setSequence(first.getSequence() + 1));
     }
+
 }

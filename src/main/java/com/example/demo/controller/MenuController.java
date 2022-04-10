@@ -48,6 +48,16 @@ public class MenuController {
         }
     }
 
+    @GetMapping("/tree/{id}")
+    public Result tree(@PathVariable("id")Long id) {
+        try {
+            return MenuResult.success("获取菜单成功", menuService.tree());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return MenuResult.failure(e.getMessage());
+        }
+    }
+
     @GetMapping("/{id}")
     public Result getMenu(@PathVariable Long id) {
         try {

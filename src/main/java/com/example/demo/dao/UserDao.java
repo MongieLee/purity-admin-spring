@@ -13,6 +13,12 @@ import java.util.List;
 @Repository
 public class UserDao {
     private final SqlSession sqlSession;
+    private static final String namespace = "cn.example.demo.User.";
+
+    private String getMapperName(String mapperName) {
+        return namespace + mapperName;
+    }
+
 
     public UserDao(SqlSession sqlSession) {
         this.sqlSession = sqlSession;
@@ -35,7 +41,7 @@ public class UserDao {
     }
 
     public List<User> getList(User user) {
-        return sqlSession.selectList("getPage", user);
+        return sqlSession.selectList(getMapperName("getPage"), user);
     }
 
     public void deleteUser(Long id) {

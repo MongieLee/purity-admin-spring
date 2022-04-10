@@ -2,8 +2,9 @@ create table role
 (
     id          int primary key auto_increment,
     name        varchar(20),
+    code        varchar(30),
     description varchar(100),
-    created_at   dateTime,
+    created_at  dateTime,
     updated_at  datetime,
     UNIQUE (name)
 ) ENGINE = InnoDB
