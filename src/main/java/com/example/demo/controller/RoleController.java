@@ -59,6 +59,11 @@ public class RoleController {
         }
     }
 
+    @GetMapping("/getAll")
+    public Result getAll() {
+        return Result.success("", roleService.getAllRoles());
+    }
+
     @GetMapping("/list")
     public Result getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
                           @RequestParam(name = "name", required = false) String name) {
@@ -101,7 +106,7 @@ public class RoleController {
                 return MenuResult.failure("角色不存在！");
             }
             roleDao.clearMenus(roleMenuObj.getRoleId());
-            if (roleMenuObj.getRoleMenus() != null && roleMenuObj.getRoleMenus().size() > 0){
+            if (roleMenuObj.getRoleMenus() != null && roleMenuObj.getRoleMenus().size() > 0) {
                 roleDao.saveRoleMenus(roleMenuObj);
             }
             return RoleResult.success("保存成功", (Role) null);
@@ -136,5 +141,4 @@ public class RoleController {
         private Long roleId;
         private ArrayList<Long> roleMenus;
     }
-
 }

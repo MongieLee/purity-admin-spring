@@ -21,6 +21,7 @@
         <mapper resource="db/mybatis/mapper/MenuMapper.xml"/>
         <mapper resource="db/mybatis/mapper/ProjectMapper.xml"/>
         <mapper resource="db/mybatis/mapper/ResourceMapper.xml"/>
+        <mapper resource="db/mybatis/mapper/ResourceCategroyMapper.xml"/>
         <mapper resource="db/mybatis/mapper/RoleMapper.xml"/>
     </mappers>
 </configuration>

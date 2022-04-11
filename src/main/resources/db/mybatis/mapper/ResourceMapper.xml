@@ -36,9 +36,9 @@
         where id = #{id}
     </delete>
     <select id="getList" resultType="ResourceDto">
-        select r.id,r.`name`,r.url,r.description,r.categroy_id,m.name as categroy_name
+        select r.id,r.`name`,r.url,r.description,r.categroy_id,rc.name as categroy_name
         ,r.created_at,r.updated_at
-        from resource r left join menu m on r.categroy_id = m.id
+        from resource r left join resource_categroy rc on r.categroy_id = rc.id
         <where>
             <if test="name != null">
                 r.`name` like concat('%',#{name},'%')

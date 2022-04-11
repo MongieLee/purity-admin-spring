@@ -16,7 +16,10 @@ import com.github.pagehelper.PageInfo;
 import lombok.val;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 菜单模块
@@ -94,4 +97,23 @@ public class ResourceController {
         }
     }
 
+    @GetMapping("/getResourceGroup")
+    public Result getResourceGroup() {
+        List<Resource> allResource = resourceService.getAllResource();
+        List<Object> list = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        allResource.forEach(i -> {
+            String categroyId = i.getCategroyId().toString();
+            if (map.get(categroyId) == null) {
+                List<Resource> objects1 = new ArrayList<>();
+                objects1.add(i);
+                map.put(categroyId, objects1);
+            } else {
+                List<Resource> o = (List<Resource>) map.get(categroyId);
+                o.add(i);
+            }
+        });
+        System.out.println(map);
+        return Result.success("", null);
+    }
 }

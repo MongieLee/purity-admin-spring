@@ -47,7 +47,7 @@ public class AuthController {
             userService.register(username, password);
             return LoginResult.success("注册成功!");
         } catch (DuplicateKeyException e) {
-            return LoginResult.failure("用戶已注冊");
+            return LoginResult.failure("用户已注册");
         }
     }
 

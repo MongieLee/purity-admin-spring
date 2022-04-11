@@ -20,4 +20,12 @@ public class Result {
         this.msg = msg;
         this.data = data;
     }
+
+    static public Result success(String msg, Object data) {
+        return new Result(200, true, msg, data);
+    }
+
+    static public Result failure(String msg) {
+        return new Result(400, false, msg, null);
+    }
 }

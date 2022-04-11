@@ -11,3 +11,6 @@ create table user
 ) ENGINE = InnoDB
 DEFAULT CHARSET = utf8mb4
 COLLATE = utf8mb4_unicode_ci;
+
+insert into user(id, username, encrypted_password, status, created_at, updated_at)
+values ('1', '123', '$2a$10$yyXdZpW5iJX2MJx2Rmx4zufln1Dd9M8QZ..sqLcvC4d4.qa9hHAV6', 1, now(), now())
