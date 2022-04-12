@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dao.RoleDao;
 import com.example.demo.dao.UserDao;
+import com.example.demo.model.RoleDTO;
 import com.example.demo.model.presistent.Role;
 import com.example.demo.model.presistent.User;
 import com.example.demo.model.presistent.UserBuilder;
@@ -147,4 +148,10 @@ public class UserService {
         });
         return roles;
     }
+
+    public List<RoleDTO> getUserRolesByUserId(List<Long> userIds) {
+        return roleDao.getUserRolesByUserId(userIds);
+    }
+
+
 }

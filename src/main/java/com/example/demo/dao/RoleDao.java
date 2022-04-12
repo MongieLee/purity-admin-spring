@@ -2,6 +2,7 @@ package com.example.demo.dao;
 
 import com.example.demo.controller.RoleController;
 import com.example.demo.controller.UserController;
+import com.example.demo.model.RoleDTO;
 import com.example.demo.model.presistent.Role;
 import com.example.demo.model.presistent.RoleMenuRel;
 import com.example.demo.utils.MappingUtils;
@@ -75,5 +76,9 @@ public class RoleDao {
     public void bindRolesByUserId(UserController.UserIdRoles userIdRoles) {
         System.out.println(userIdRoles);
         sqlSession.insert(getMapperName("bindRolesByUserId"), userIdRoles);
+    }
+
+    public List<RoleDTO> getUserRolesByUserId(List<Long> userIds) {
+        return sqlSession.selectList(getMapperName("getUserRolesByUserId"), MappingUtils.asMap("userIds",userIds));
     }
 }

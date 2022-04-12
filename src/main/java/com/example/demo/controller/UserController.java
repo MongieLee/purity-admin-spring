@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.converter.p2s.UserP2SConverter;
+import com.example.demo.model.RoleDTO;
 import com.example.demo.model.presistent.Role;
 import com.example.demo.model.presistent.User;
 import com.example.demo.model.presistent.UserDto;
@@ -11,6 +12,7 @@ import com.example.demo.model.service.result.UserResult;
 import com.example.demo.service.UserService;
 import com.github.pagehelper.PageInfo;
 import lombok.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -69,8 +71,17 @@ public class UserController {
         List<User> list = userService.getList(user, page, pageSize);
         PageInfo<User> userPageInfo = new PageInfo<>(list);
         List<UserDto> result = new ArrayList<>();
+
+        List<Long> userIdList = list.stream().map(User::getId).collect(Collectors.toList());
+        List<RoleDTO> roleList = userService.getUserRolesByUserId(userIdList);
         list.forEach(currentUser -> {
-            List<Role> userRoles = userService.getUserRoles(currentUser.getId());
+//            List<Role> userRoles = userService.getUserRoles(currentUser.getId());
+            List<Role> userRoles = roleList.stream().filter(item -> item.getUserId().equals(currentUser.getId()))
+                    .map(item -> {
+                        Role roleResult = new Role();
+                        BeanUtils.copyProperties(item, roleResult);
+                        return roleResult;
+                    }).collect(Collectors.toList());
             AtomicReference<String> roleNames = new AtomicReference<>();
             List<Long> roleIds = userRoles.stream().map(value -> {
                 String name = value.getName();

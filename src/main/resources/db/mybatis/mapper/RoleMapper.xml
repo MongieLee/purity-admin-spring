@@ -73,4 +73,22 @@
         from user_role_rel
         where user_id = #{userId}
     </delete>
+
+    <select id="getUserRolesByUserId" resultType="com.example.demo.model.RoleDTO">
+        SELECT
+        a.id,
+        a.name,
+        a.code,
+        a.description,
+        a.created_at createdAt,
+        a.updated_at updatedAt,
+        b.user_id userId
+        FROM role a
+        INNER JOIN user_role_rel b ON a.id = b.user_id
+        WHERE b.user_id IN
+        <foreach collection="userIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+
+    </select>
 </mapper>
