@@ -37,6 +37,10 @@
             updated_at  = now()
         where id = #{id}
     </update>
+    <select id="getAll" resultType="Role">
+        select *
+        from role;
+    </select>
     <delete id="deleteRole">
         delete
         from role
@@ -57,4 +61,16 @@
             )
         </foreach>
     </insert>
+    <insert id="bindRolesByUserId">
+        insert into user_role_rel(user_id,role_id)
+        values
+        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
+            #{userId}, #{item}
+        </foreach>
+    </insert>
+    <delete id="cleanRolesByUserId">
+        delete
+        from user_role_rel
+        where user_id = #{userId}
+    </delete>
 </mapper>

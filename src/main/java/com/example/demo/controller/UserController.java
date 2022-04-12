@@ -1,18 +1,26 @@
 package com.example.demo.controller;
 
+import com.example.demo.converter.p2s.UserP2SConverter;
+import com.example.demo.model.presistent.Role;
 import com.example.demo.model.presistent.User;
+import com.example.demo.model.presistent.UserDto;
 import com.example.demo.model.service.result.BaseListResult;
 import com.example.demo.model.service.result.LoginResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.model.service.result.UserResult;
 import com.example.demo.service.UserService;
 import com.github.pagehelper.PageInfo;
+import lombok.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * 用户模块
@@ -21,9 +29,11 @@ import java.util.Map;
 @RequestMapping("/api/v1/user")
 public class UserController {
     private final UserService userService;
+    private final UserP2SConverter userP2SConverter;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserP2SConverter userP2SConverter) {
         this.userService = userService;
+        this.userP2SConverter = userP2SConverter;
     }
 
     @GetMapping("/info")
@@ -50,14 +60,28 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public Result getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize, @RequestParam(name = "username", required = false) String username) {
-        if (page == null || page < 1) {
+    public Result getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
+                          @RequestParam(name = "username", required = false) String username) {
+        if (page < 1) {
             page = 1;
         }
         User user = new User().setUsername(username);
         List<User> list = userService.getList(user, page, pageSize);
         PageInfo<User> userPageInfo = new PageInfo<>(list);
-        return BaseListResult.success(list, userPageInfo.getTotal());
+        List<UserDto> result = new ArrayList<>();
+        list.forEach(currentUser -> {
+            List<Role> userRoles = userService.getUserRoles(currentUser.getId());
+            AtomicReference<String> roleNames = new AtomicReference<>();
+            List<Long> roleIds = userRoles.stream().map(value -> {
+                String name = value.getName();
+                roleNames.set(Objects.isNull(roleNames.get()) ? name : roleNames.get() + "，" + name);
+                return value.getId();
+            }).collect(Collectors.toList());
+            UserDto userDto = userP2SConverter.convert(currentUser);
+            userDto.setRoleIds(roleIds).setRoleNames(roleNames.get());
+            result.add(userDto);
+        });
+        return BaseListResult.success(result, userPageInfo.getTotal());
     }
 
     @DeleteMapping("/{id}")
@@ -77,4 +101,14 @@ public class UserController {
             return UserResult.failure(e.getMessage());
         }
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString
+    static public class UserIdRoles {
+        private Long userId;
+        private List<Long> roleIds;
+    }
+
 }

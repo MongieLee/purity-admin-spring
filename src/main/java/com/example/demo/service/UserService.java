@@ -1,11 +1,14 @@
 package com.example.demo.service;
 
+import com.example.demo.dao.RoleDao;
 import com.example.demo.dao.UserDao;
+import com.example.demo.model.presistent.Role;
 import com.example.demo.model.presistent.User;
 import com.example.demo.model.presistent.UserBuilder;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.model.service.result.UserResult;
 import com.github.pagehelper.PageHelper;
+import lombok.val;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,23 +16,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS)
 public class UserService {
     private final UserDao userDao;
+    private final RoleDao roleDao;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public UserService(UserDao userDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserDao userDao, RoleDao roleDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDao = userDao;
+        this.roleDao = roleDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     /**
      * 更新用户
      *
-     * @param user 用戶實體
+     * @param user 用戶实体
      * @return 用户信息
      */
     public User updateUser(User user) {
@@ -105,7 +111,7 @@ public class UserService {
      * 删除用户
      *
      * @param id 用户Id
-     * @return 用户结果
+     * @return JSON响应实体
      */
     public Result deleteUser(Long id) {
         User userById = userDao.findUserById(id);
@@ -116,6 +122,13 @@ public class UserService {
         return UserResult.success("删除成功");
     }
 
+    /**
+     * 改变用户状态，传入1表示改为正常，传入0表示封号
+     *
+     * @param status 状态码
+     * @param userId 用户ID
+     * @return JSON响应实体
+     */
     public Result changeStatus(byte status, Long userId) {
         User userById = userDao.findUserById(userId);
         if (userById == null) {
@@ -123,5 +136,15 @@ public class UserService {
         }
         userDao.changeStatus(status, userId);
         return UserResult.success("用户【" + userById.getUsername() + "】账号状态修改成功");
+    }
+
+    public List<Role> getUserRoles(Long userId) {
+        List<Long> roleIds = userDao.findRolesByUserId(userId);
+        List<Role> roles = new ArrayList<>();
+        roleIds.forEach(roleId->{
+            val roleById = roleDao.getRoleById(roleId);
+            roles.add(roleById);
+        });
+        return roles;
     }
 }

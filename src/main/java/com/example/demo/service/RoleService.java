@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dao.RoleDao;
 import com.example.demo.model.presistent.Role;
+import com.example.demo.model.presistent.User;
 import com.github.pagehelper.PageHelper;
 import lombok.val;
 import org.springframework.stereotype.Service;
@@ -56,5 +57,8 @@ public class RoleService {
             throw new RuntimeException("删除失败，id为【" + id + "】的角色不存在");
         }
         roleDao.deleteRole(id);
+    }
+
+    public void getMenuByUser(User userByName) {
     }
 }

@@ -1,9 +1,11 @@
 package com.example.demo.dao;
 
 import com.example.demo.controller.RoleController;
+import com.example.demo.controller.UserController;
 import com.example.demo.model.presistent.Role;
 import com.example.demo.model.presistent.RoleMenuRel;
 import com.example.demo.utils.MappingUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
@@ -64,5 +66,14 @@ public class RoleDao {
 
     public List<RoleMenuRel> getRoleMenus(Long roleId) {
         return sqlSession.selectList(getMapperName("getRoleMenus"), MappingUtils.asMap("roleId", roleId));
+    }
+
+    public void cleanRolesByUserId(@Param("userId") Long userId) {
+        sqlSession.delete("cleanRolesByUserId", userId);
+    }
+
+    public void bindRolesByUserId(UserController.UserIdRoles userIdRoles) {
+        System.out.println(userIdRoles);
+        sqlSession.insert(getMapperName("bindRolesByUserId"), userIdRoles);
     }
 }

@@ -46,4 +46,9 @@
         set status = #{status}
         where id = #{userId};
     </update>
+    <select id="findRolesByUserId" resultType="long">
+        select role_id
+        from user_role_rel
+        where user_id = #{userId};
+    </select>
 </mapper>

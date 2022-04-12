@@ -14,11 +14,9 @@ import java.util.HashMap;
 public class JWTInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println(1);
         HashMap<String, Object> map = new HashMap<>();
         String token = request.getHeader("Authorization");
         token = token.substring(7);
-        System.out.println(token);
         try {
             JWTUtils.verify(token);
             return true;

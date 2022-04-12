@@ -3,16 +3,17 @@ package com.example.demo.controller;
 import com.example.demo.dao.RoleDao;
 import com.example.demo.model.presistent.Role;
 import com.example.demo.model.presistent.RoleMenuRel;
-import com.example.demo.model.service.result.BaseListResult;
-import com.example.demo.model.service.result.MenuResult;
-import com.example.demo.model.service.result.Result;
-import com.example.demo.model.service.result.RoleResult;
+import com.example.demo.model.presistent.User;
+import com.example.demo.model.service.result.*;
 import com.example.demo.service.RoleService;
+import com.example.demo.service.UserService;
 import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,10 +29,12 @@ public class RoleController {
 
     private final RoleService roleService;
     private final RoleDao roleDao;
+    private final UserService userService;
 
-    public RoleController(RoleService roleService, RoleDao roleDao) {
+    public RoleController(RoleService roleService, RoleDao roleDao, UserService userService) {
         this.roleService = roleService;
         this.roleDao = roleDao;
+        this.userService = userService;
     }
 
     @PostMapping
@@ -131,6 +134,26 @@ public class RoleController {
             e.printStackTrace();
             return MenuResult.failure(e.getMessage());
         }
+    }
+
+    @GetMapping("/getMenusByUserInfo")
+    public Result getMenusByUserInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = (String) authentication.getPrincipal();
+        User userByName = userService.getUserByName(userName);
+        roleService.getMenuByUser(userByName);
+        return LoginResult.success("获取用户信息成功", userByName);
+    }
+
+    @PostMapping("/bindRoles")
+    public Result bindRoles(@RequestBody UserController.UserIdRoles userIdRoles) {
+        System.out.println("userIdRoles");
+        System.out.println(userIdRoles);
+        roleDao.cleanRolesByUserId(userIdRoles.getUserId());
+        if (userIdRoles.getRoleIds().equals(null) || userIdRoles.getRoleIds().size() > 0) {
+            roleDao.bindRolesByUserId(userIdRoles);
+        }
+        return Result.success("分配角色成功", null);
     }
 
     @Data

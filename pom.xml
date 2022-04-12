@@ -112,7 +112,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>5.2.4</version>
                 <configuration>
-                    <url>jdbc:mysql://localhost:3306/demo?characterEncoding=UTF-8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true</url>
+                    <url>jdbc:mysql://mongielee.top:3306/demo?characterEncoding=UTF-8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true</url>
                     <user>root</user>
                     <password>12345678</password>
                 </configuration>
