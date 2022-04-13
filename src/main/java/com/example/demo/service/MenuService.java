@@ -2,9 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.converter.p2s.MenuP2SConverter;
 import com.example.demo.dao.MenuDao;
-import com.example.demo.model.presistent.Menu;
+import com.example.demo.model.persistent.Menu;
 import com.example.demo.model.service.MenuDto;
-import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -206,4 +205,13 @@ public class MenuService {
         menuDao.updateMenu(menu.setSequence(first.getSequence() + 1));
     }
 
+    public void test() {
+        menuDao.test();
+    }
+
+    public List<MenuDto> getUserMenus(Long userId) {
+        return convertTree(menuDao.getUserMenus(userId).stream()
+                .map(menuP2SConverter::convert)
+                .collect(Collectors.toList()));
+    }
 }

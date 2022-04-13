@@ -1,4 +1,4 @@
-package com.example.demo.model.presistent;
+package com.example.demo.model.persistent;
 
 import java.time.Instant;
 

@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.converter.p2s.MenuP2SConverter;
-import com.example.demo.model.presistent.Menu;
-import com.example.demo.model.presistent.Resource;
-import com.example.demo.model.presistent.User;
-import com.example.demo.model.service.MenuDto;
+import com.example.demo.model.persistent.Resource;
 import com.example.demo.model.service.ResourceDto;
 import com.example.demo.model.service.result.BaseListResult;
 import com.example.demo.model.service.result.MenuResult;

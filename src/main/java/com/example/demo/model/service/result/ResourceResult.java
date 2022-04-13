@@ -1,8 +1,7 @@
 package com.example.demo.model.service.result;
 
 
-import com.example.demo.model.presistent.Resource;
-import com.example.demo.model.service.MenuDto;
+import com.example.demo.model.persistent.Resource;
 import com.example.demo.model.service.ResourceDto;
 
 import java.util.List;

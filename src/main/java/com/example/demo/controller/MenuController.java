@@ -1,13 +1,15 @@
 package com.example.demo.controller;
 
 import com.example.demo.converter.p2s.MenuP2SConverter;
-import com.example.demo.model.presistent.Menu;
+import com.example.demo.model.persistent.Menu;
 import com.example.demo.model.service.MenuDto;
 import com.example.demo.model.service.result.MenuResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.service.MenuService;
 import lombok.val;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 菜单模块
@@ -49,7 +51,7 @@ public class MenuController {
     }
 
     @GetMapping("/tree/{id}")
-    public Result tree(@PathVariable("id")Long id) {
+    public Result tree(@PathVariable("id") Long id) {
         try {
             return MenuResult.success("获取菜单成功", menuService.tree());
         } catch (Exception e) {
@@ -136,4 +138,15 @@ public class MenuController {
         }
     }
 
+    @GetMapping("/test")
+    public Result test() {
+        menuService.test();
+        return null;
+    }
+
+    @GetMapping("/getUserMenus/{userId}")
+    public Result getUserMenus(@PathVariable("userId") Long userId) {
+        System.out.println("用户ID:"+ userId);
+        return Result.success("获取用户菜单成功",menuService.getUserMenus(userId));
+    }
 }

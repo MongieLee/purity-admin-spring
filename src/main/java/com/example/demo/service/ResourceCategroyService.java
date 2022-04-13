@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.ResourceCategroyDao;
-import com.example.demo.model.presistent.ResourceCategroy;
+import com.example.demo.model.persistent.ResourceCategroy;
 import com.github.pagehelper.PageHelper;
 import lombok.val;
 import org.springframework.stereotype.Service;

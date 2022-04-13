@@ -1,8 +1,7 @@
 package com.example.demo.model.service.result;
 
 
-import com.example.demo.model.presistent.Role;
-import com.example.demo.model.service.MenuDto;
+import com.example.demo.model.persistent.Role;
 
 import java.util.List;
 

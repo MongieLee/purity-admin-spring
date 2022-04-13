@@ -1,7 +1,7 @@
 package com.example.demo.model.service.result;
 
 
-import com.example.demo.model.presistent.Project;
+import com.example.demo.model.persistent.Project;
 
 import java.util.List;
 

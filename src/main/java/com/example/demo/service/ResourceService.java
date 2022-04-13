@@ -4,7 +4,7 @@ import com.example.demo.converter.p2s.ResourceP2SConverter;
 import com.example.demo.dao.MenuDao;
 import com.example.demo.dao.ResourceCategroyDao;
 import com.example.demo.dao.ResourceDao;
-import com.example.demo.model.presistent.Resource;
+import com.example.demo.model.persistent.Resource;
 import com.example.demo.model.service.ResourceDto;
 import com.github.pagehelper.PageHelper;
 import lombok.val;

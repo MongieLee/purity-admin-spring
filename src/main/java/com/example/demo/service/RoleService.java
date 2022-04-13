@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.RoleDao;
-import com.example.demo.model.presistent.Role;
-import com.example.demo.model.presistent.User;
+import com.example.demo.model.persistent.Role;
+import com.example.demo.model.persistent.User;
 import com.github.pagehelper.PageHelper;
 import lombok.val;
 import org.springframework.stereotype.Service;

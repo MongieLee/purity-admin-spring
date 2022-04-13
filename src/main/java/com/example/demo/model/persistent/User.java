@@ -1,4 +1,4 @@
-package com.example.demo.model.presistent;
+package com.example.demo.model.persistent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.time.Instant;
-import java.util.List;
 
 /**
  * 用户实体类
@@ -16,13 +15,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true) // 生成的setter方法返回当前this
-public class UserDto {
+public class User {
     private Long id;
     private String username;
+    @JsonIgnore
+    private String encryptedPassword;
     private Boolean status;
     private Instant createdAt;
     private Instant updatedAt;
     private String avatar;
-    private String roleNames;
-    private List<Long> roleIds;
 }

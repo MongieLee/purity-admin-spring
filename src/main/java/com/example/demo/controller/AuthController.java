@@ -1,13 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.presistent.User;
-import com.example.demo.model.presistent.UserBuilder;
+import com.example.demo.model.persistent.User;
+import com.example.demo.model.persistent.UserBuilder;
 import com.example.demo.model.service.result.LoginResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.model.service.result.TokenResult;
 import com.example.demo.service.UserService;
 import com.example.demo.utils.JWTUtils;
-import com.example.demo.utils.MappingUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -66,6 +65,7 @@ public class AuthController {
         }
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
+        map.put("userId", user.getId().toString());
         return TokenResult.success("登录成功", JWTUtils.generateToken(map));
     }
 }

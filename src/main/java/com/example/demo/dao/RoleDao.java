@@ -2,9 +2,9 @@ package com.example.demo.dao;
 
 import com.example.demo.controller.RoleController;
 import com.example.demo.controller.UserController;
-import com.example.demo.model.RoleDTO;
-import com.example.demo.model.presistent.Role;
-import com.example.demo.model.presistent.RoleMenuRel;
+import com.example.demo.model.persistent.RoleDTO;
+import com.example.demo.model.persistent.Role;
+import com.example.demo.model.persistent.RoleMenuRel;
 import com.example.demo.utils.MappingUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;

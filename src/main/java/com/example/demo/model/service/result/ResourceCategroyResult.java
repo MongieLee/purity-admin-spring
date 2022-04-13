@@ -1,9 +1,8 @@
 package com.example.demo.model.service.result;
 
 
-import com.example.demo.model.presistent.Resource;
-import com.example.demo.model.presistent.ResourceCategroy;
-import com.example.demo.model.service.ResourceDto;
+import com.example.demo.model.persistent.Resource;
+import com.example.demo.model.persistent.ResourceCategroy;
 
 import java.util.List;
 

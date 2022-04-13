@@ -1,7 +1,6 @@
 package com.example.demo.dao;
 
-import com.example.demo.model.presistent.Menu;
-import com.example.demo.model.presistent.Project;
+import com.example.demo.model.persistent.Project;
 import com.example.demo.utils.MappingUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;

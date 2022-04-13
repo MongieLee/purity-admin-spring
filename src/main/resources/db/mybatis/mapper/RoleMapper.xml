@@ -64,8 +64,8 @@
     <insert id="bindRolesByUserId">
         insert into user_role_rel(user_id,role_id)
         values
-        <foreach collection="roleIds" item="item" open="(" separator="," close=")">
-            #{userId}, #{item}
+        <foreach collection="roleIds" item="item" separator=",">
+            ( #{userId}, #{item} )
         </foreach>
     </insert>
     <delete id="cleanRolesByUserId">
@@ -74,7 +74,7 @@
         where user_id = #{userId}
     </delete>
 
-    <select id="getUserRolesByUserId" resultType="com.example.demo.model.RoleDTO">
+    <select id="getUserRolesByUserId" resultType="RoleDTO">
         SELECT
         a.id,
         a.name,
@@ -84,7 +84,7 @@
         a.updated_at updatedAt,
         b.user_id userId
         FROM role a
-        INNER JOIN user_role_rel b ON a.id = b.user_id
+        INNER JOIN user_role_rel b ON a.id = b.role_id
         WHERE b.user_id IN
         <foreach collection="userIds" item="item" separator="," open="(" close=")">
             #{item}

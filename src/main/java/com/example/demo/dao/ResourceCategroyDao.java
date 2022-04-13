@@ -1,7 +1,6 @@
 package com.example.demo.dao;
 
-import com.example.demo.model.presistent.Resource;
-import com.example.demo.model.presistent.ResourceCategroy;
+import com.example.demo.model.persistent.ResourceCategroy;
 import com.example.demo.utils.MappingUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;

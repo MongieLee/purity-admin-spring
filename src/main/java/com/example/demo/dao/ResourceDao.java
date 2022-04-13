@@ -1,6 +1,6 @@
 package com.example.demo.dao;
 
-import com.example.demo.model.presistent.Resource;
+import com.example.demo.model.persistent.Resource;
 import com.example.demo.model.service.ResourceDto;
 import com.example.demo.utils.MappingUtils;
 import org.apache.ibatis.session.SqlSession;

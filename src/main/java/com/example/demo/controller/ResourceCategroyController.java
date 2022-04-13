@@ -1,15 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.presistent.ResourceCategroy;
-import com.example.demo.model.service.ResourceDto;
+import com.example.demo.model.persistent.ResourceCategroy;
 import com.example.demo.model.service.result.BaseListResult;
-import com.example.demo.model.service.result.MenuResult;
-import com.example.demo.model.service.result.ResourceResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.service.ResourceCategroyService;
 import com.github.pagehelper.PageInfo;
 import lombok.val;
-import org.apache.ibatis.io.ResolverUtil;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

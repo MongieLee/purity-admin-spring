@@ -1,10 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.converter.p2s.UserP2SConverter;
-import com.example.demo.model.RoleDTO;
-import com.example.demo.model.presistent.Role;
-import com.example.demo.model.presistent.User;
-import com.example.demo.model.presistent.UserDto;
+import com.example.demo.model.persistent.RoleDTO;
+import com.example.demo.model.persistent.Role;
+import com.example.demo.model.persistent.User;
+import com.example.demo.model.persistent.UserDto;
 import com.example.demo.model.service.result.BaseListResult;
 import com.example.demo.model.service.result.LoginResult;
 import com.example.demo.model.service.result.Result;

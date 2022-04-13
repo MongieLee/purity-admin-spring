@@ -2,10 +2,10 @@ package com.example.demo.service;
 
 import com.example.demo.dao.RoleDao;
 import com.example.demo.dao.UserDao;
-import com.example.demo.model.RoleDTO;
-import com.example.demo.model.presistent.Role;
-import com.example.demo.model.presistent.User;
-import com.example.demo.model.presistent.UserBuilder;
+import com.example.demo.model.persistent.RoleDTO;
+import com.example.demo.model.persistent.Role;
+import com.example.demo.model.persistent.User;
+import com.example.demo.model.persistent.UserBuilder;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.model.service.result.UserResult;
 import com.github.pagehelper.PageHelper;
@@ -78,7 +78,7 @@ public class UserService {
         if (!bCryptPasswordEncoder.matches(user.getEncryptedPassword(), targetUser.getEncryptedPassword())) {
             throw new BadCredentialsException("账号或密码错误");
         }
-        return user;
+        return targetUser;
     }
 
     /**

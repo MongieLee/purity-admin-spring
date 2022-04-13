@@ -1,10 +1,14 @@
 package com.example.demo.dao;
 
-import com.example.demo.model.presistent.Menu;
+import com.example.demo.model.persistent.Menu;
+import com.example.demo.model.service.MenuDto;
 import com.example.demo.utils.MappingUtils;
+import lombok.val;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,5 +52,14 @@ public class MenuDao {
 
     public List<Menu> getSibling(Menu menu) {
         return sqlSession.selectList("cn.example.demo.Menu.getSibling", menu);
+    }
+
+    public List<Menu> getUserMenus(Long userId) {
+        return sqlSession.selectList("getUserMenus", userId);
+    }
+
+    public void test() {
+        val list = Arrays.asList(1, 2, 3);
+        sqlSession.selectOne("test", list);
     }
 }

@@ -50,4 +50,15 @@
             </if>
         </where>
     </select>
+    <select id="getUserMenus" resultType="Menu">
+        select distinct a.*
+        from menu a
+                 inner join role_menu_rel b on a.id = b.menu_id
+                 inner join user_role_rel c on c.role_id = b.role_id
+        where c.user_id = #{userId}
+    </select>
+    <select id="test" resultType="Menu">
+        select *
+        from menu where id in #{arg}
+    </select>
 </mapper>

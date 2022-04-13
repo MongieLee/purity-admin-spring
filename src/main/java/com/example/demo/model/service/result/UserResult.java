@@ -1,6 +1,6 @@
 package com.example.demo.model.service.result;
 
-import com.example.demo.model.presistent.User;
+import com.example.demo.model.persistent.User;
 
 /**
  * 用户结果工厂方法

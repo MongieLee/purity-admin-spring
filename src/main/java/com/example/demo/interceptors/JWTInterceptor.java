@@ -7,6 +7,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * JWT拦截器实现
@@ -16,7 +17,9 @@ public class JWTInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HashMap<String, Object> map = new HashMap<>();
         String token = request.getHeader("Authorization");
-        token = token.substring(7);
+        if (!Objects.isNull(token)) {
+            token = token.substring(7);
+        }
         try {
             JWTUtils.verify(token);
             return true;

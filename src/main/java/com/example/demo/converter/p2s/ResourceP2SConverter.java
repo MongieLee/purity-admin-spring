@@ -1,6 +1,6 @@
 package com.example.demo.converter.p2s;
 
-import com.example.demo.model.presistent.Resource;
+import com.example.demo.model.persistent.Resource;
 import com.example.demo.model.service.ResourceDto;
 import com.google.common.base.Converter;
 import org.springframework.stereotype.Component;

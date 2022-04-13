@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.model.presistent.User;
+import com.example.demo.model.persistent.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;

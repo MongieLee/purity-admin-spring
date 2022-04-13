@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.presistent.Project;
+import com.example.demo.model.persistent.Project;
 import com.example.demo.model.service.result.BaseListResult;
 import com.example.demo.model.service.result.ProjectResult;
 import com.example.demo.model.service.result.Result;

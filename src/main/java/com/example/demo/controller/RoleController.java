@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
 import com.example.demo.dao.RoleDao;
-import com.example.demo.model.presistent.Role;
-import com.example.demo.model.presistent.RoleMenuRel;
-import com.example.demo.model.presistent.User;
+import com.example.demo.model.persistent.Role;
+import com.example.demo.model.persistent.RoleMenuRel;
+import com.example.demo.model.persistent.User;
 import com.example.demo.model.service.result.*;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;

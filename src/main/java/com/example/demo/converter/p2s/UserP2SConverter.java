@@ -1,7 +1,7 @@
 package com.example.demo.converter.p2s;
 
-import com.example.demo.model.presistent.User;
-import com.example.demo.model.presistent.UserDto;
+import com.example.demo.model.persistent.User;
+import com.example.demo.model.persistent.UserDto;
 import com.google.common.base.Converter;
 import org.springframework.stereotype.Component;
 

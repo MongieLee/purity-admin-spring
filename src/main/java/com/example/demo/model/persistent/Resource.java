@@ -1,4 +1,4 @@
-package com.example.demo.model.presistent;
+package com.example.demo.model.persistent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,12 +14,14 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true) // 生成的setter方法返回当前this
+@Accessors(chain = true)
 @ToString
-public class Project {
+public class Resource {
     private Long id;
     private String name;
-    private Long userId;
+    private String url;
+    private String description;
+    private Long categroyId;
     private Instant createdAt;
     private Instant updatedAt;
 }

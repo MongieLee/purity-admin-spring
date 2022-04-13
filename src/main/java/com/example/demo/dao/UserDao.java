@@ -1,6 +1,6 @@
 package com.example.demo.dao;
 
-import com.example.demo.model.presistent.User;
+import com.example.demo.model.persistent.User;
 import com.example.demo.utils.MappingUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.SqlSession;

@@ -1,6 +1,6 @@
 package com.example.demo.converter.p2s;
 
-import com.example.demo.model.presistent.Menu;
+import com.example.demo.model.persistent.Menu;
 import com.example.demo.model.service.MenuDto;
 import com.google.common.base.Converter;
 import org.springframework.stereotype.Component;

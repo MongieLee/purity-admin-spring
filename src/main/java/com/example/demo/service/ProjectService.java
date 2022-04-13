@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dao.ProjectDao;
-import com.example.demo.model.presistent.Project;
+import com.example.demo.model.persistent.Project;
 import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
