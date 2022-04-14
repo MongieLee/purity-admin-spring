@@ -7,6 +7,7 @@ import com.example.demo.model.service.result.MenuResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.service.MenuService;
 import lombok.val;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public class MenuController {
             return MenuResult.failure("创建失败，菜单已存在");
         }
         try {
+            String userName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            menu.setCreateBy(userName);
             menuService.createMenu(menu);
             return MenuResult.success("创建菜单成功", menuService.getMenuByName(menu.getName()));
         } catch (Exception e) {
@@ -73,6 +76,8 @@ public class MenuController {
     @PutMapping("/{id}")
     public Result updateUser(@PathVariable("id") Long id, @RequestBody Menu menu) {
         try {
+            String userName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            menu.setUpdatedBy(userName);
             return MenuResult.success("更新菜单成功", menuService.updateMenu(id, menu));
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,7 +151,7 @@ public class MenuController {
 
     @GetMapping("/getUserMenus/{userId}")
     public Result getUserMenus(@PathVariable("userId") Long userId) {
-        System.out.println("用户ID:"+ userId);
-        return Result.success("获取用户菜单成功",menuService.getUserMenus(userId));
+        System.out.println("用户ID:" + userId);
+        return Result.success("获取用户菜单成功", menuService.getUserMenus(userId));
     }
 }

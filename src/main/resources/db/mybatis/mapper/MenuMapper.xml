@@ -4,8 +4,10 @@
 <mapper namespace="cn.example.demo.Menu">
     <insert id="createMenu" parameterType="Menu">
         insert into menu
-            (name, path, parent_id, sequence, created_at, updated_at)
-        values (#{name}, #{path}, #{parentId}, #{sequence}, now(), now())
+        (name, path, parent_id, menu_type, visible, `icon`, sequence, remark, permission, created_by, created_at,
+         updated_at)
+        values (#{name}, #{path}, #{parentId}, #{menuType}, #{visible}, #{icon}, #{sequence}, #{remark}, #{permission},
+                #{createBy}, now(), now())
     </insert>
     <update id="updateMenu" parameterType="Menu">
         update menu
@@ -13,6 +15,12 @@
             path=#{path},
             parent_id=#{parentId},
             sequence=#{sequence},
+            remark=#{remark},
+            `icon`=#{icon},
+            `visible`=#{visible},
+            `menu_type`=#{menuType},
+            permission=#{permission},
+            updated_by = #{updatedBy},
             updated_at = now()
         where id = #{id}
     </update>
@@ -59,6 +67,7 @@
     </select>
     <select id="test" resultType="Menu">
         select *
-        from menu where id in #{arg}
+        from menu
+        where id in #{arg}
     </select>
 </mapper>

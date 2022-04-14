@@ -19,9 +19,16 @@ import java.time.Instant;
 public class Menu {
     private Long id;
     private String name;
-    private String path;
     private Long parentId;
+    private String path;
+    private String icon;
+    private Character menuType;
     private Integer sequence;
+    private Boolean visible;
+    private String remark;
+    private String permission;
+    private String createBy;
     private Instant createdAt;
+    private String updatedBy;
     private Instant updatedAt;
 }

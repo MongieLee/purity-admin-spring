@@ -19,10 +19,14 @@ public class MenuP2SConverter extends Converter<Menu, MenuDto> {
                 .setName(menu.getName())
                 .setPath(menu.getPath())
                 .setParentId(menu.getParentId())
-                .setChildren(new ArrayList<>())
+                .setIcon(menu.getIcon())
+                .setVisible(menu.getVisible())
+                .setMenuType(menu.getMenuType())
+                .setRemark(menu.getRemark())
+                .setPermission(menu.getPermission())
                 .setSequence(menu.getSequence())
-                .setCreatedAt(menu.getCreatedAt())
-                .setUpdatedAt(menu.getUpdatedAt());
+                .setChildren(new ArrayList<>())
+                .setCreatedAt(menu.getCreatedAt());
     }
 
     @Override
@@ -32,8 +36,11 @@ public class MenuP2SConverter extends Converter<Menu, MenuDto> {
                 .setName(menuDto.getName())
                 .setPath(menuDto.getPath())
                 .setParentId(menuDto.getParentId())
-                .setSequence(menuDto.getSequence())
-                .setCreatedAt(menuDto.getCreatedAt())
-                .setUpdatedAt(menuDto.getUpdatedAt());
+                .setIcon(menuDto.getIcon())
+                .setVisible(menuDto.getVisible())
+                .setMenuType(menuDto.getMenuType())
+                .setRemark(menuDto.getRemark())
+                .setPermission(menuDto.getPermission())
+                .setSequence(menuDto.getSequence());
     }
 }
