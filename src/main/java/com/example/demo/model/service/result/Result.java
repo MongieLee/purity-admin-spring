@@ -28,4 +28,8 @@ public class Result {
     static public Result failure(String msg) {
         return new Result(400, false, msg, null);
     }
+
+    static public Result failure(String msg, Object data) {
+        return new Result(400, false, msg, data);
+    }
 }
