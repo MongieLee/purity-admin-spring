@@ -87,9 +87,10 @@ public class UserService {
      * @param username          账号
      * @param encryptedPassword 密码
      */
-    public void register(String username, String encryptedPassword) {
+    public void register(String username, String encryptedPassword,String avatart) {
         User registerUser = UserBuilder.anUser()
                 .withUsername(username)
+                .withAvatar(avatart)
                 .withEncryptedPassword(bCryptPasswordEncoder.encode(encryptedPassword))
                 .build();
         userDao.register(registerUser);

@@ -28,6 +28,8 @@ import java.util.Objects;
 @Slf4j
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+    private final static String REFRESH_TOKEN = "refresh_token";
+
     private final UserService userService;
     private final JWTUtils jwtUtils;
     private final RedisTemplate<String, Object> redisTemplate;
@@ -38,10 +40,16 @@ public class AuthController {
         this.redisTemplate = redisTemplate;
     }
 
+    @GetMapping("/testError")
+    public Object testError() {
+        return new RuntimeException("错了，你错了知道嘛");
+    }
+
     @PostMapping("/register")
     public Result register(@RequestBody Map<String, String> usernameAndPasswordJson) {
         String username = usernameAndPasswordJson.get("username");
         String password = usernameAndPasswordJson.get("password");
+        String avatar = usernameAndPasswordJson.get("avatar");
         if (username == null || password == null) {
             return LoginResult.failure("用户名或密码为空");
         }
@@ -52,7 +60,7 @@ public class AuthController {
             return LoginResult.failure("无效密码");
         }
         try {
-            userService.register(username, password);
+            userService.register(username, password, avatar);
             return LoginResult.success("注册成功!");
         } catch (DuplicateKeyException e) {
             return LoginResult.failure("用户已注册");
@@ -68,6 +76,9 @@ public class AuthController {
         try {
             User build = UserBuilder.anUser().withUsername(username).withEncryptedPassword(password).build();
             user = userService.login(build);
+            if (!user.getStatus()) {
+                return Result.failure("登录失败，账号被封禁，请联系管理员");
+            }
             System.out.println(user);
         } catch (UsernameNotFoundException | BadCredentialsException e) {
             return LoginResult.failure(e.getMessage());
@@ -75,7 +86,16 @@ public class AuthController {
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
         map.put("userId", user.getId().toString());
-        return TokenResult.success("登录成功", JWTUtils.generateToken(map));
+        HashMap<String, Object> stringObjectHashMap = JWTUtils.generateToken(map);
+        HashOperations<String, Object, Object> redisHashMap = redisTemplate.opsForHash();
+        Object o1 = redisHashMap.get(REFRESH_TOKEN, user.getId());
+        System.out.println(o1);
+        redisHashMap.put(REFRESH_TOKEN, user.getId().toString(), stringObjectHashMap.get(REFRESH_TOKEN));
+        Object o = redisHashMap.get(REFRESH_TOKEN, user.getId());
+        System.out.println(o);
+        System.out.println(user.getId());
+        System.out.println(stringObjectHashMap.get(REFRESH_TOKEN));
+        return TokenResult.success("登录成功", stringObjectHashMap);
     }
 
     @PostMapping("/refreshToken")
@@ -84,7 +104,8 @@ public class AuthController {
         String refreshToken = refreshTokenObj.get("refresh_token");
         String grantType = refreshTokenObj.get("grant_type");
         Map<String, String> map = new HashMap<>();
-        String REFRESH_TOKEN = "refresh_token";
+        System.out.println(grantType + ":<==grantType");
+        System.out.println(refreshToken + ":<==refreshToken");
         if (!Objects.isNull(grantType) && grantType.equals(GrantType.REFRESH_TOKEN.getType())) {
             try {
                 JWTUtils.verify(refreshToken);
@@ -94,12 +115,13 @@ public class AuthController {
                 map.put("userId", userId);
                 map.put("username", username);
                 HashOperations<String, Object, Object> redisHashMap = redisTemplate.opsForHash();
-                if(redisHashMap.hasKey("refresh_token",userId)){
-                    String redisRefreshToken = redisHashMap.get(REFRESH_TOKEN, userId).toString();
-                    if(!redisRefreshToken.equals(refreshToken)){
-                        return Result.failure("refresh_token无效");
-                    }
-                };
+                redisTemplate.opsForValue().set("cacheTime", 1000);
+//                if (redisHashMap.hasKey("refresh_token", userId)) {
+//                    String redisRefreshToken = redisHashMap.get(REFRESH_TOKEN, userId).toString();
+//                    if (!redisRefreshToken.equals(refreshToken)) {
+//                        return Result.failure("refresh_token已被使用过，刷新token失败");
+//                    }
+//                };
                 HashMap<String, Object> tokenResult = JWTUtils.generateToken(map);
                 redisHashMap.put("refresh_token", userId, tokenResult.get(REFRESH_TOKEN));
                 return Result.success("刷新令牌成功", tokenResult);

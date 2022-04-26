@@ -26,6 +26,7 @@ public class UserDao {
     }
 
     public void register(User user) {
+        System.out.println(user);
         sqlSession.insert("register", user);
     }
 
