@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.TodayNewsDao">
+    <insert id="insertNews">
+        insert into today_news
+        (title, content, cover_img, sequence, is_publish, published_by, published_at, created_by, created_at, updated_by,
+         updated_at)
+        values (#{title}, #{content}, #{coverImg}, #{sequence}, #{isPublish}, #{publishedBy}, #{publishedAt},
+                #{createdBy}, now(), #{updatedBy}, now())
+    </insert>
+    <select id="getProjectById" resultType="Project">
+        select *
+        from project
+        where id = #{id}
+    </select>
+    <select id="getProjectByName" resultType="Project">
+        select *
+        from project
+        where name = #{name}
+    </select>
+    <select id="getAll" resultType="Project">
+        select *
+        from project
+    </select>
+    <select id="getProjectsByPage" resultType="Project">
+        select *
+        from project
+        <where>
+            <if test="name != null">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+
+    </select>
+    <update id="UpdateProject">
+        update project
+        set name       = #{name},
+            updated_at = now()
+        where id = #{id}
+    </update>
+    <delete id="deleteProject">
+        delete
+        from project
+        where id = #{id}
+    </delete>
+</mapper>
