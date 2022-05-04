@@ -27,20 +27,24 @@ public class TodayNewsController {
 
     @PostMapping
     public Result createNews(@RequestBody TodayNews todayNews) {
-        todayNewsDao.insertNews(todayNews);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        todayNews.setCreatedBy(username);
+        todayNewsDao.createNews(todayNews);
         return Result.success("创建成功", null);
     }
 
-    @PostMapping("/{id}")
-    public Result updateNews(@PathVariable("id") Long id, @RequestBody TodayNews todayNews) {
+    @PutMapping
+    public Result updateNews(@RequestBody TodayNews todayNews) {
+        Long id = todayNews.getId();
         TodayNews newsById = todayNewsDao.getNewsById(id);
         if (Objects.isNull(newsById)) {
             return Result.failure("目标资讯不存在");
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = (String) authentication.getPrincipal();
-        todayNews.setId(id);
-        todayNewsDao.updateNews(todayNews, userName);
+        todayNews.setId(id).setUpdatedBy(userName);
+        todayNewsDao.updateNews(todayNews);
         return Result.success("更新资讯成功");
     }
 
@@ -87,11 +91,12 @@ public class TodayNewsController {
 
     @GetMapping("/list")
     public Result getList(TodayNewsQuery query) {
-        if (query.getPage() < 1) {
+        if (Objects.isNull(query.getPage()) || query.getPage() < 1) {
             query.setPage(1);
-            return todayNewsService.getList(query);
-        } else {
-            return todayNewsService.getList(query);
         }
+        if (Objects.isNull(query.getPageSize())) {
+            query.setPageSize(10);
+        }
+        return todayNewsService.getList(query);
     }
 }

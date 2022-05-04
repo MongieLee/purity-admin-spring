@@ -15,7 +15,7 @@ import java.time.Instant;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true) // 生成的setter方法返回当前this
+@Accessors(chain = true)
 public class TodayNews {
     private Long id;
     private String title;

@@ -2,7 +2,7 @@
 spring:
   redis:
     port: 6379
-    host: mogielee.top
+    host: mongielee.top
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://mongielee.top:3306/demo?characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true

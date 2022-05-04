@@ -14,7 +14,7 @@ public interface TodayNewsDao {
      * @param news
      * @return
      */
-    int insertNews(TodayNews news);
+    int createNews(TodayNews news);
 
     /**
      * 更新文章，如果资讯已发布，则变更为未发布状态
@@ -23,8 +23,8 @@ public interface TodayNewsDao {
      * @return
      */
     @Update("update today_news set title = #{news.title}, content = #{news.content}, cover_img = #{news.coverImg}, sequence = #{news.sequence}," +
-            "is_publish = 0, published_at = null, published_by = null, updated_by = #{username}, updated_at = now() where id = #{news.id}")
-    int updateNews(TodayNews news, String username);
+            "is_publish = 0, published_at = null, published_by = null, updated_by = 123, updated_at = now() where id = #{news.id}")
+    int updateNews(@Param("news") TodayNews news);
 
 
     /**
@@ -71,11 +71,11 @@ public interface TodayNewsDao {
      * @return
      */
     @Select("<script> select * from today_news <where>" +
-             "<if test=\"query.title != null\">title like concat('%',#{query.title},'%')</if>"+
-             "<if test=\"query.isPublish != null\">title like concat('%',#{query.isPublish},'%')</if>"+
+             "<if test=\"query.title != null\">and title like concat('%',#{query.title},'%') </if>"+
+             "<if test=\"query.isPublish != null\">and is_publish = #{query.isPublish} </if>"+
              "<if test=\"query.createdStar != null and query.createdEnd != null\">" +
-            "TO_DAYS(created_at) >= TO_DAYS(#{query.createdAt})</if>"+
+            "and TO_DAYS(created_at) >= TO_DAYS(#{query.createdStar})</if>"+
             "</where>"+"</script>")
-    List<TodayNews> getList(TodayNewsQuery query);
+    List<TodayNews> getList(@Param("query") TodayNewsQuery query);
 
 }

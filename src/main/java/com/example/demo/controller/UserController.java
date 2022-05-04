@@ -116,7 +116,6 @@ public class UserController {
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    @ToString
     static public class UserIdRoles {
         private Long userId;
         private List<Long> roleIds;
