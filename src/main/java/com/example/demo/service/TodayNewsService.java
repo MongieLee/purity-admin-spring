@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dao.TodayNewsDao;
 import com.example.demo.model.persistent.TodayNews;
-import com.example.demo.model.queryUtil.TodayNewsQuery;
+import com.example.demo.model.queryUtil.TodayNewsListQuery;
 import com.example.demo.model.service.result.BaseListResult;
 import com.example.demo.model.service.result.Result;
 import com.github.pagehelper.PageHelper;
@@ -24,7 +24,7 @@ public class TodayNewsService {
         return Result.success("创建资讯成功");
     }
 
-    public Result getList(TodayNewsQuery query) {
+    public Result getList(TodayNewsListQuery query) {
         PageHelper.startPage(query.getPage(), query.getPageSize());
         List<TodayNews> list = todayNewsDao.getList(query);
         return BaseListResult.success(list, new PageInfo<>(list).getTotal());

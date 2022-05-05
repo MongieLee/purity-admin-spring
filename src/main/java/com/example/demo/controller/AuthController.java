@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,32 +41,13 @@ public class AuthController {
 
     @PostMapping("/register")
     public Result register(@RequestBody @Validated Account account) {
-        try {
-            userService.register(account);
-            return LoginResult.success("注册成功!");
-        } catch (DuplicateKeyException e) {
-            return LoginResult.failure("用户已注册");
-        }
+        return userService.register(account);
     }
 
     @PostMapping("/login")
     @ResponseBody
     public Result loggedInUser(@RequestBody @Validated Account account) {
-        String username = account.getUsername();
-        User dbUser;
-        dbUser = userService.login(new User().setUsername(account.getUsername()).setEncrypted_password(account.getPassword()));
-        if (!dbUser.getStatus()) {
-            return Result.failure("登录失败，账号被封禁，请联系管理员");
-        }
-
-        // 往redis中存refreshToken
-        Map<String, String> map = new HashMap<>();
-        map.put("username", username);
-        map.put("userId", dbUser.getId().toString());
-        HashMap<String, Object> stringObjectHashMap = JWTUtils.generateToken(map);
-        HashOperations<String, Object, Object> redisHashMap = redisTemplate.opsForHash();
-        redisHashMap.put(REFRESH_TOKEN, dbUser.getId().toString(), stringObjectHashMap.get(REFRESH_TOKEN));
-        return TokenResult.success("登录成功", stringObjectHashMap);
+        return userService.login(new User().setUsername(account.getUsername()).setEncryptedPassword(account.getPassword()));
     }
 
     @PostMapping("/refreshToken")

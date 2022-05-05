@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * 菜单Dto实体类
+ * 资源Dto实体类
  */
 @Data
 @NoArgsConstructor

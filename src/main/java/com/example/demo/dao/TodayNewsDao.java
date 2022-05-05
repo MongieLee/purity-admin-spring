@@ -1,7 +1,7 @@
 package com.example.demo.dao;
 
 import com.example.demo.model.persistent.TodayNews;
-import com.example.demo.model.queryUtil.TodayNewsQuery;
+import com.example.demo.model.queryUtil.TodayNewsListQuery;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -76,6 +76,6 @@ public interface TodayNewsDao {
              "<if test=\"query.createdStar != null and query.createdEnd != null\">" +
             "and TO_DAYS(created_at) >= TO_DAYS(#{query.createdStar})</if>"+
             "</where>"+"</script>")
-    List<TodayNews> getList(@Param("query") TodayNewsQuery query);
+    List<TodayNews> getList(@Param("query") TodayNewsListQuery query);
 
 }

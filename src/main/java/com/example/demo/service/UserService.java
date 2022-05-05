@@ -2,36 +2,43 @@ package com.example.demo.service;
 
 import com.example.demo.dao.RoleDao;
 import com.example.demo.dao.UserDao;
+import com.example.demo.exception.CustomException;
 import com.example.demo.model.persistent.RoleDTO;
 import com.example.demo.model.persistent.Role;
 import com.example.demo.model.persistent.User;
 import com.example.demo.model.service.Account;
 import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.TokenResult;
 import com.example.demo.model.service.result.UserResult;
+import com.example.demo.utils.JWTUtils;
 import com.github.pagehelper.PageHelper;
 import lombok.val;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS)
 public class UserService {
+    private final static String REFRESH_TOKEN = "refresh_token";
+
     private final UserDao userDao;
     private final RoleDao roleDao;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public UserService(UserDao userDao, RoleDao roleDao, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserDao userDao, RoleDao roleDao, BCryptPasswordEncoder bCryptPasswordEncoder, RedisTemplate<String, Object> redisTemplate) {
         this.userDao = userDao;
         this.roleDao = roleDao;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
@@ -71,19 +78,54 @@ public class UserService {
      * @param user 用戶实体
      * @return 用户信息
      */
-    public User login(User user) {
+    public Result login(User user) {
         User dbUser = getUserByName(user.getUsername());
+        String loginUsername = user.getUsername();
         if (Objects.isNull(dbUser)) {
-            throw new UsernameNotFoundException("用户" + user.getUsername() + "不存在");
+            throw new CustomException("用户【" + loginUsername + "】不存在");
         }
-        if (!bCryptPasswordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
-            throw new BadCredentialsException("账号或密码错误");
+        if (!dbUser.getStatus()) {
+            throw new CustomException("登录失败，账号被封禁，请联系管理员");
         }
-        return dbUser;
+        if (!bCryptPasswordEncoder.matches(user.getEncryptedPassword(), dbUser.getEncryptedPassword())) {
+            throw new BadCredentialsException("密码错误");
+        }
+
+        // 往redis中存refreshToken
+        return TokenResult.success("登录成功", cacheInRedis(dbUser));
     }
 
-    public void register(Account account) {
-        userDao.register(new User().setUsername(account.getUsername()).setPassword(bCryptPasswordEncoder.encode(account.getPassword())));
+    /**
+     * 传入用户，生成token，refreshToken，以及缓存到redis中
+     *
+     * @param dbUser 用户实体
+     * @return 包含token，refreshToken，token过期时间的结果集
+     */
+    private HashMap<String, Object> cacheInRedis(User dbUser) {
+        String dbId = dbUser.getId().toString();
+        Map<String, String> map = new HashMap<>();
+        map.put("username", dbUser.getUsername());
+        map.put("userId", dbId);
+        HashMap<String, Object> stringObjectHashMap = JWTUtils.generateToken(map);
+        HashOperations<String, Object, Object> redisHashMap = redisTemplate.opsForHash();
+        redisHashMap.put(REFRESH_TOKEN, dbId, stringObjectHashMap.get(REFRESH_TOKEN));
+        return stringObjectHashMap;
+    }
+
+
+    /**
+     * 用户注册
+     *
+     * @param account 账号密码
+     * @return 注册结果
+     */
+    public Result register(Account account) {
+        try {
+            userDao.register(new User().setUsername(account.getUsername()).setEncryptedPassword(bCryptPasswordEncoder.encode(account.getPassword())));
+            return Result.success("注册成功!");
+        } catch (DuplicateKeyException e) {
+            return Result.failure("用户已注册");
+        }
     }
 
     /**

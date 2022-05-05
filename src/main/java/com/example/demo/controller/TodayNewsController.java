@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dao.TodayNewsDao;
 import com.example.demo.model.persistent.TodayNews;
-import com.example.demo.model.queryUtil.TodayNewsQuery;
+import com.example.demo.model.queryUtil.TodayNewsListQuery;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.service.TodayNewsService;
 import io.swagger.annotations.Api;
@@ -97,7 +97,7 @@ public class TodayNewsController {
     }
 
     @GetMapping("/list")
-    public Result getList(TodayNewsQuery query) {
+    public Result getList(TodayNewsListQuery query) {
         if (Objects.isNull(query.getPage()) || query.getPage() < 1) {
             query.setPage(1);
         }

@@ -11,7 +11,7 @@
     <insert id="register" parameterType="User">
         insert into user
             (username, encrypted_password, avatar, status, created_at, updated_at)
-        values (#{username}, #{password}, #{avatar}, 1, now(), now())
+        values (#{username}, #{encryptedPassword}, #{avatar}, 1, now(), now())
     </insert>
     <select id="getUserById" resultType="User">
         select *

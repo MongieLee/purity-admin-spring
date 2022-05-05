@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import java.time.Instant;
 
 /**
- * 菜单实体类
+ * 今日资讯实体类
  */
 @ApiModel(description = "今日资讯实体类")
 @Data
@@ -25,18 +25,33 @@ public class TodayNews {
 
     @NotNull(message = "标题不能为空")
     @NotBlank(message = "标题不能为空")
+    @ApiModelProperty("今日资讯标题")
     private String title;
+
+    @ApiModelProperty("资讯封面图片地址")
     private String coverImg;
+
+    @ApiModelProperty("资讯文章内容")
     private String content;
+
+    @ApiModelProperty("是否发布,true为发布，false为未发布")
     private Boolean isPublish;
+
+    @ApiModelProperty("排序号")
     private Integer sequence;
 
+    @ApiModelProperty("创建人")
     private String createdBy;
+    @ApiModelProperty("创建时间")
     private Instant createdAt;
 
+    @ApiModelProperty("更新人")
     private String updatedBy;
+    @ApiModelProperty("更新时间")
     private Instant updatedAt;
 
-    private Instant publishedAt;
+    @ApiModelProperty("发布人")
     private String publishedBy;
+    @ApiModelProperty("发布时间")
+    private Instant publishedAt;
 }
