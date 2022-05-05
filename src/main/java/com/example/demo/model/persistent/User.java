@@ -19,7 +19,7 @@ public class User {
     private Long id;
     private String username;
     @JsonIgnore
-    private String encryptedPassword;
+    private String encrypted_password;
     private Boolean status;
     private Instant createdAt;
     private Instant updatedAt;

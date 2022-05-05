@@ -1,5 +1,6 @@
 package com.example.demo.model.service.result;
 
+import io.swagger.models.auth.In;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -31,6 +32,10 @@ public class Result {
 
     static public Result failure(String msg) {
         return new Result(400, false, msg, null);
+    }
+
+    static public Result failure(String msg,Integer code) {
+        return new Result(code, false, msg, null);
     }
 
     static public Result failure(String msg, Object data) {

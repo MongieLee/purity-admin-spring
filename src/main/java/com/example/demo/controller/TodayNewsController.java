@@ -5,8 +5,12 @@ import com.example.demo.model.persistent.TodayNews;
 import com.example.demo.model.queryUtil.TodayNewsQuery;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.service.TodayNewsService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -14,6 +18,7 @@ import java.util.Objects;
 /**
  * 菜单模块
  */
+@Api(tags = "今日资讯模块")
 @RestController
 @RequestMapping("/api/v1/todayNews")
 public class TodayNewsController {
@@ -25,8 +30,10 @@ public class TodayNewsController {
         this.todayNewsService = todayNewsService;
     }
 
+    @ApiOperation(value = "创建今日资讯", httpMethod = "GET")
+    @ApiParam("TodayNews实体类")
     @PostMapping
-    public Result createNews(@RequestBody TodayNews todayNews) {
+    public Result createNews(@RequestBody @Validated TodayNews todayNews) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) authentication.getPrincipal();
         todayNews.setCreatedBy(username);

@@ -6,6 +6,9 @@ import com.example.demo.model.service.result.ProjectResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.service.ProjectService;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

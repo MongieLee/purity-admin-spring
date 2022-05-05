@@ -5,7 +5,7 @@ import com.example.demo.dao.UserDao;
 import com.example.demo.model.persistent.RoleDTO;
 import com.example.demo.model.persistent.Role;
 import com.example.demo.model.persistent.User;
-import com.example.demo.model.persistent.UserBuilder;
+import com.example.demo.model.service.Account;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.model.service.result.UserResult;
 import com.github.pagehelper.PageHelper;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(propagation = Propagation.SUPPORTS)
@@ -71,29 +72,18 @@ public class UserService {
      * @return 用户信息
      */
     public User login(User user) {
-        User targetUser = getUserByName(user.getUsername());
-        if (targetUser == null) {
+        User dbUser = getUserByName(user.getUsername());
+        if (Objects.isNull(dbUser)) {
             throw new UsernameNotFoundException("用户" + user.getUsername() + "不存在");
         }
-        if (!bCryptPasswordEncoder.matches(user.getEncryptedPassword(), targetUser.getEncryptedPassword())) {
+        if (!bCryptPasswordEncoder.matches(user.getPassword(), dbUser.getPassword())) {
             throw new BadCredentialsException("账号或密码错误");
         }
-        return targetUser;
+        return dbUser;
     }
 
-    /**
-     * 用户注册
-     *
-     * @param username          账号
-     * @param encryptedPassword 密码
-     */
-    public void register(String username, String encryptedPassword,String avatart) {
-        User registerUser = UserBuilder.anUser()
-                .withUsername(username)
-                .withAvatar(avatart)
-                .withEncryptedPassword(bCryptPasswordEncoder.encode(encryptedPassword))
-                .build();
-        userDao.register(registerUser);
+    public void register(Account account) {
+        userDao.register(new User().setUsername(account.getUsername()).setPassword(bCryptPasswordEncoder.encode(account.getPassword())));
     }
 
     /**
@@ -143,7 +133,7 @@ public class UserService {
     public List<Role> getUserRoles(Long userId) {
         List<Long> roleIds = userDao.findRolesByUserId(userId);
         List<Role> roles = new ArrayList<>();
-        roleIds.forEach(roleId->{
+        roleIds.forEach(roleId -> {
             val roleById = roleDao.getRoleById(roleId);
             roles.add(roleById);
         });

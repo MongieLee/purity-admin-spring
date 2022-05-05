@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.dao.TodayNewsDao">
-    <insert id="insertNews">
+    <insert id="createNews">
         insert into today_news
         (title, content, cover_img, sequence, is_publish, published_by, published_at, created_by, created_at, updated_by,
          updated_at)

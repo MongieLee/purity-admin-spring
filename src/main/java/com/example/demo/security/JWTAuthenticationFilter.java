@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.TreeSet;
 
 @Component
@@ -26,7 +27,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = request.getHeader("Authorization");
         // 相当于匿名访问，配合白名单使用
-        if (token == null) {
+        if (Objects.isNull(token)) {
             chain.doFilter(request, response);
             return;
         }

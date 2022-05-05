@@ -3,7 +3,7 @@ package com.example.demo.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.model.persistent.User;
-import com.example.demo.model.persistent.UserBuilder;
+import com.example.demo.model.service.Account;
 import com.example.demo.model.service.result.LoginResult;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.model.service.result.TokenResult;
@@ -15,6 +15,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -40,27 +41,10 @@ public class AuthController {
         this.redisTemplate = redisTemplate;
     }
 
-    @GetMapping("/testError")
-    public Object testError() {
-        return new RuntimeException("错了，你错了知道嘛");
-    }
-
     @PostMapping("/register")
-    public Result register(@RequestBody Map<String, String> usernameAndPasswordJson) {
-        String username = usernameAndPasswordJson.get("username");
-        String password = usernameAndPasswordJson.get("password");
-        String avatar = usernameAndPasswordJson.get("avatar");
-        if (username == null || password == null) {
-            return LoginResult.failure("用户名或密码为空");
-        }
-        if (username.length() < 1 || username.length() > 15) {
-            return LoginResult.failure("无效用户名");
-        }
-        if (password.length() < 1 || password.length() > 15) {
-            return LoginResult.failure("无效密码");
-        }
+    public Result register(@RequestBody @Validated Account account) {
         try {
-            userService.register(username, password, avatar);
+            userService.register(account);
             return LoginResult.success("注册成功!");
         } catch (DuplicateKeyException e) {
             return LoginResult.failure("用户已注册");
@@ -69,32 +53,21 @@ public class AuthController {
 
     @PostMapping("/login")
     @ResponseBody
-    public Result loggedInUser(@RequestBody Map<String, Object> usernameAndPasswordJson) {
-        String username = usernameAndPasswordJson.get("username").toString();
-        String password = usernameAndPasswordJson.get("password").toString();
-        User user;
-        try {
-            User build = UserBuilder.anUser().withUsername(username).withEncryptedPassword(password).build();
-            user = userService.login(build);
-            if (!user.getStatus()) {
-                return Result.failure("登录失败，账号被封禁，请联系管理员");
-            }
-            System.out.println(user);
-        } catch (UsernameNotFoundException | BadCredentialsException e) {
-            return LoginResult.failure(e.getMessage());
+    public Result loggedInUser(@RequestBody @Validated Account account) {
+        String username = account.getUsername();
+        User dbUser;
+        dbUser = userService.login(new User().setUsername(account.getUsername()).setEncrypted_password(account.getPassword()));
+        if (!dbUser.getStatus()) {
+            return Result.failure("登录失败，账号被封禁，请联系管理员");
         }
+
+        // 往redis中存refreshToken
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
-        map.put("userId", user.getId().toString());
+        map.put("userId", dbUser.getId().toString());
         HashMap<String, Object> stringObjectHashMap = JWTUtils.generateToken(map);
         HashOperations<String, Object, Object> redisHashMap = redisTemplate.opsForHash();
-        Object o1 = redisHashMap.get(REFRESH_TOKEN, user.getId());
-        System.out.println(o1);
-        redisHashMap.put(REFRESH_TOKEN, user.getId().toString(), stringObjectHashMap.get(REFRESH_TOKEN));
-        Object o = redisHashMap.get(REFRESH_TOKEN, user.getId());
-        System.out.println(o);
-        System.out.println(user.getId());
-        System.out.println(stringObjectHashMap.get(REFRESH_TOKEN));
+        redisHashMap.put(REFRESH_TOKEN, dbUser.getId().toString(), stringObjectHashMap.get(REFRESH_TOKEN));
         return TokenResult.success("登录成功", stringObjectHashMap);
     }
 

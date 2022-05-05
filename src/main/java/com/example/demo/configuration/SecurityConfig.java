@@ -61,7 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 配置白名单
         http.authorizeRequests()
-                .antMatchers("/", "/uploadFiles/**","/api/v1/auth/**").permitAll()
+                .antMatchers("/uploadFiles/**", "/api/v1/auth/**", "/swagger-ui.html", "/webjars/**", "/error/**"
+                        , "/swagger-resources/**", "/swagger-ui.html/**", "/v2/**", "/csrf").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilter(authenticationFilter());
