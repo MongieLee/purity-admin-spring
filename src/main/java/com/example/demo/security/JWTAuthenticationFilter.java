@@ -1,5 +1,6 @@
 package com.example.demo.security;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.utils.JWTUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,14 +27,20 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String token = request.getHeader("Authorization");
-        // 相当于匿名访问，配合白名单使用
+        // 相当于匿名访问，配合白名单使用，如果是白名单，则直接放行，如果不是白名单，则拒绝访问
         if (Objects.isNull(token)) {
             chain.doFilter(request, response);
             return;
         }
         token = token.substring(7);
-        System.out.println(token);
-        JWTUtils.verify(token);
+        try {
+            JWTUtils.verify(token);
+        } catch (JWTVerificationException e) {
+            // 由于全局异常只能捕获Controller中抛出的异常
+            // 此处将请求转发到异常处理器中再抛出，来达到实现被全局异常处理器命中的效果
+            request.setAttribute("filter.error", e);
+            request.getRequestDispatcher("/error/throwEx").forward(request, response);
+        }
         DecodedJWT tokenInfo = JWTUtils.getTokenInfo(token);
         String username = tokenInfo.getClaim("username").asString();
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, null, new TreeSet<>());

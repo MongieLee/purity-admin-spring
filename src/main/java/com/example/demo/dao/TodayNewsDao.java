@@ -14,6 +14,8 @@ public interface TodayNewsDao {
      * @param news
      * @return
      */
+    @Insert("insert into today_news (title,content,cover_img,created_by,created_at)" +
+            "values (#{title},#{content},#{coverImg},#{createdBy},now())")
     int createNews(TodayNews news);
 
     /**
@@ -22,10 +24,9 @@ public interface TodayNewsDao {
      * @param news
      * @return
      */
-    @Update("update today_news set title = #{news.title}, content = #{news.content}, cover_img = #{news.coverImg}, sequence = #{news.sequence}," +
-            "is_publish = 0, published_at = null, published_by = null, updated_by = 123, updated_at = now() where id = #{news.id}")
-    int updateNews(@Param("news") TodayNews news);
-
+    @Update("update today_news set title = #{title}, content = #{content}, cover_img = #{coverImg}, " +
+            "is_publish = #{isPublish}, published_at = #{publishedAt}, published_by = #{publishedBy}, updated_by = #{updatedBy}, updated_at = now() where id = #{id}")
+    int updateNews(TodayNews news);
 
     /**
      * 删除文章
@@ -71,11 +72,11 @@ public interface TodayNewsDao {
      * @return
      */
     @Select("<script> select * from today_news <where>" +
-             "<if test=\"query.title != null\">and title like concat('%',#{query.title},'%') </if>"+
-             "<if test=\"query.isPublish != null\">and is_publish = #{query.isPublish} </if>"+
-             "<if test=\"query.createdStar != null and query.createdEnd != null\">" +
-            "and TO_DAYS(created_at) >= TO_DAYS(#{query.createdStar})</if>"+
-            "</where>"+"</script>")
+            "<if test=\"query.title != null\">and title like concat('%',#{query.title},'%') </if>" +
+            "<if test=\"query.isPublish != null\">and is_publish = #{query.isPublish} </if>" +
+            "<if test=\"query.createdStar != null and query.createdEnd != null\">" +
+            "and TO_DAYS(created_at) >= TO_DAYS(#{query.createdStar})</if>" +
+            "</where>" + "</script>")
     List<TodayNews> getList(@Param("query") TodayNewsListQuery query);
 
 }
