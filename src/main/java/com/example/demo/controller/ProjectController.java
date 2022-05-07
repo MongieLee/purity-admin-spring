@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.persistent.Project;
 import com.example.demo.model.service.result.BaseListResult;
-import com.example.demo.model.service.result.ProjectResult;
+import com.example.demo.model.service.result.Result;
 import com.example.demo.model.service.result.Result;
 import com.example.demo.service.ProjectService;
 import com.github.pagehelper.PageInfo;
@@ -31,13 +31,13 @@ public class ProjectController {
         try {
             Project projectByName = projectService.getProjectByName(project.getName());
             if (projectByName != null) {
-                return ProjectResult.failure("创建失败，项目已存在");
+                return Result.failure("创建失败，项目已存在");
             }
             projectService.createProject(project);
-            return ProjectResult.success("创建项目成功", projectService.getProjectByName(project.getName()));
+            return Result.success("创建项目成功", projectService.getProjectByName(project.getName()));
         } catch (Exception e) {
             e.printStackTrace();
-            return ProjectResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
@@ -56,20 +56,20 @@ public class ProjectController {
     @GetMapping("/{id}")
     public Result getProject(@PathVariable Long id) {
         try {
-            return ProjectResult.success("获取项目成功", projectService.getProjectById(id));
+            return Result.success("获取项目成功", projectService.getProjectById(id));
         } catch (Exception e) {
             e.printStackTrace();
-            return ProjectResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
     public Result updateProject(@PathVariable("id") Long id, @RequestBody Project project) {
         try {
-            return ProjectResult.success("更新项目成功", projectService.updateProject(id, project));
+            return Result.success("更新项目成功", projectService.updateProject(id, project));
         } catch (Exception e) {
             e.printStackTrace();
-            return ProjectResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
@@ -77,10 +77,10 @@ public class ProjectController {
     public Result deleteProject(@PathVariable("id") Long id) {
         try {
             projectService.deleteProject(id);
-            return ProjectResult.success("删除项目成功", (Project) null);
+            return Result.success("删除项目成功", (Project) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return ProjectResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 }

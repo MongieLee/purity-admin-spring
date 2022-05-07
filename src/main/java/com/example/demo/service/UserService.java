@@ -6,10 +6,10 @@ import com.example.demo.exception.CustomException;
 import com.example.demo.model.persistent.RoleDTO;
 import com.example.demo.model.persistent.Role;
 import com.example.demo.model.persistent.User;
+import com.example.demo.model.persistent.UserTypeEnum;
 import com.example.demo.model.service.Account;
 import com.example.demo.model.service.result.Result;
-import com.example.demo.model.service.result.TokenResult;
-import com.example.demo.model.service.result.UserResult;
+import com.example.demo.model.service.result.Result;
 import com.example.demo.utils.JWTUtils;
 import com.github.pagehelper.PageHelper;
 import lombok.val;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 @Service
@@ -84,15 +85,15 @@ public class UserService {
         if (Objects.isNull(dbUser)) {
             throw new CustomException("用户【" + loginUsername + "】不存在");
         }
-        if (!dbUser.getStatus()) {
-            throw new CustomException("登录失败，账号被封禁，请联系管理员");
-        }
         if (!bCryptPasswordEncoder.matches(user.getEncryptedPassword(), dbUser.getEncryptedPassword())) {
             throw new BadCredentialsException("密码错误");
         }
+        if (!dbUser.getStatus()) {
+            throw new CustomException("登录失败，账号被封禁，请联系管理员");
+        }
 
         // 往redis中存refreshToken
-        return TokenResult.success("登录成功", cacheInRedis(dbUser));
+        return Result.success("登录成功", cacheInRedis(dbUser));
     }
 
     /**
@@ -112,6 +113,26 @@ public class UserService {
         return stringObjectHashMap;
     }
 
+    public static String getRandomChineseCharacters(int length) {
+        String ret = "";
+        for (int i = 0; i < length; i++) {
+            String str = null;
+            int hightPos, lowPos; // 定义高低位
+            Random random = new Random();
+            hightPos = (176 + Math.abs(random.nextInt(39))); // 获取高位值
+            lowPos = (161 + Math.abs(random.nextInt(93))); // 获取低位值
+            byte[] b = new byte[2];
+            b[0] = (new Integer(hightPos).byteValue());
+            b[1] = (new Integer(lowPos).byteValue());
+            try {
+                str = new String(b, "GBK"); // 转成中文
+            } catch (UnsupportedEncodingException ex) {
+                ex.printStackTrace();
+            }
+            ret += str;
+        }
+        return ret;
+    }
 
     /**
      * 用户注册
@@ -121,7 +142,11 @@ public class UserService {
      */
     public Result register(Account account) {
         try {
-            userDao.register(new User().setUsername(account.getUsername()).setEncryptedPassword(bCryptPasswordEncoder.encode(account.getPassword())));
+            userDao.register(new User().setUsername(account.getUsername())
+                    .setNickname(getRandomChineseCharacters(4))
+                    .setEncryptedPassword(bCryptPasswordEncoder.encode(account.getPassword()))
+                    .setUserType(UserTypeEnum.DEFAULT_USER)
+            );
             return Result.success("注册成功!");
         } catch (DuplicateKeyException e) {
             return Result.failure("用户已注册");
@@ -150,10 +175,10 @@ public class UserService {
     public Result deleteUser(Long id) {
         User userById = userDao.findUserById(id);
         if (userById == null) {
-            return UserResult.failure("用户不存在");
+            return Result.failure("用户不存在");
         }
         userDao.deleteUser(id);
-        return UserResult.success("删除成功");
+        return Result.success("删除成功");
     }
 
     /**
@@ -166,10 +191,10 @@ public class UserService {
     public Result changeStatus(byte status, Long userId) {
         User userById = userDao.findUserById(userId);
         if (userById == null) {
-            return UserResult.failure("用户不存在");
+            return Result.failure("用户不存在");
         }
         userDao.changeStatus(status, userId);
-        return UserResult.success("用户【" + userById.getUsername() + "】账号状态修改成功");
+        return Result.success("用户【" + userById.getUsername() + "】账号状态修改成功");
     }
 
     public List<Role> getUserRoles(Long userId) {
@@ -187,4 +212,7 @@ public class UserService {
     }
 
 
+    public Result refreshToken(String s) {
+        return Result.success("刷新成功", null);
+    }
 }

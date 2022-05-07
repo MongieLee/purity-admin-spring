@@ -41,24 +41,24 @@ public class RoleController {
     public Result createRole(@RequestBody Role role) {
         val roleByName = roleService.getRoleByName(role.getName());
         if (roleByName != null) {
-            return RoleResult.failure("创建失败，角色已存在");
+            return Result.failure("创建失败，角色已存在");
         }
         try {
             roleService.createRole(role);
-            return RoleResult.success("创建角色成功", roleService.getRoleByName(role.getName()));
+            return Result.success("创建角色成功", roleService.getRoleByName(role.getName()));
         } catch (Exception e) {
             e.printStackTrace();
-            return MenuResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
     public Result getRole(@PathVariable Long id) {
         try {
-            return RoleResult.success("获取角色成功", roleService.getRoleById(id));
+            return Result.success("获取角色成功", roleService.getRoleById(id));
         } catch (Exception e) {
             e.printStackTrace();
-            return MenuResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
@@ -82,10 +82,10 @@ public class RoleController {
     @PutMapping
     public Result updateRole(@RequestBody Role role) {
         try {
-            return RoleResult.success("更新角色成功", roleService.updateRole(role));
+            return Result.success("更新角色成功", roleService.updateRole(role));
         } catch (Exception e) {
             e.printStackTrace();
-            return MenuResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
@@ -93,10 +93,10 @@ public class RoleController {
     public Result deleteMenu(@PathVariable("id") Long id) {
         try {
             roleService.deleteRole(id);
-            return RoleResult.success("删除角色成功", (Role) null);
+            return Result.success("删除角色成功", (Role) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return MenuResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
@@ -106,16 +106,16 @@ public class RoleController {
         try {
             val roleById = roleDao.getRoleById(roleMenuObj.getRoleId());
             if (roleById == null) {
-                return MenuResult.failure("角色不存在！");
+                return Result.failure("角色不存在！");
             }
             roleDao.clearMenus(roleMenuObj.getRoleId());
             if (roleMenuObj.getRoleMenus() != null && roleMenuObj.getRoleMenus().size() > 0) {
                 roleDao.saveRoleMenus(roleMenuObj);
             }
-            return RoleResult.success("保存成功", (Role) null);
+            return Result.success("保存成功", (Role) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return MenuResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
@@ -124,15 +124,15 @@ public class RoleController {
         try {
             val roleById = roleDao.getRoleById(roleId);
             if (roleById == null) {
-                return MenuResult.failure("角色不存在！");
+                return Result.failure("角色不存在！");
             }
             val roleMenus = roleDao.getRoleMenus(roleId);
 
-            return RoleResult.success("获取角色菜单成功",
+            return Result.success("获取角色菜单成功",
                     roleMenus.stream().map(RoleMenuRel::getMenuId).collect(Collectors.toList()));
         } catch (Exception e) {
             e.printStackTrace();
-            return MenuResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
@@ -142,7 +142,7 @@ public class RoleController {
         String userName = (String) authentication.getPrincipal();
         User userByName = userService.getUserByName(userName);
         roleService.getMenuByUser(userByName);
-        return LoginResult.success("获取用户信息成功", userByName);
+        return Result.success("获取用户信息成功", userByName);
     }
 
     @PostMapping("/bindRoles")

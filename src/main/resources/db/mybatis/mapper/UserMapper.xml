@@ -2,28 +2,36 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="cn.example.demo.User">
-    <select id="login" parameterType="User" resultType="User">
+    <resultMap id="userMap" type="com.example.demo.model.persistent.User">
+        <id column="id" property="id"></id>
+        <!--        <result column="user_type" property="userType"-->
+        <!--                typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"></result>-->
+        <result column="user_type" property="userType"
+                typeHandler="com.example.demo.model.UserEnumTypeHandler"></result>
+    </resultMap>
+    <select id="login" parameterType="User">
         select *
         from user
         where id = #{username}
           and encryptedPassword = #{encryptedPassword}
     </select>
-    <insert id="register" parameterType="User">
+    <insert id="register">
         insert into user
-            (username, encrypted_password, avatar, status, created_at, updated_at)
-        values (#{username}, #{encryptedPassword}, #{avatar}, 1, now(), now())
+        (username, encrypted_password, nickname, avatar, status, user_type, created_at, updated_at)
+        values (#{username}, #{encryptedPassword}, #{nickname}, #{avatar}, 1,
+                #{userType,typeHandler=com.example.demo.model.UserEnumTypeHandler}, now(), now())
     </insert>
     <select id="getUserById" resultType="User">
         select *
         from user
         where id = #{userId}
     </select>
-    <select id="getUserByUsername" resultType="User">
+    <select id="getUserByUsername" resultMap="userMap">
         select *
         from user
         where username = #{username}
     </select>
-    <select id="getPage" resultType="User">
+    <select id="getPage" resultMap="userMap">
         select *
         from user
         <if test="username != null">
@@ -33,7 +41,8 @@
     <update id="updateUser" parameterType="User">
         UPDATE user
         SET avatar     = #{avatar},
-            updated_at = now()
+            updated_at = now(),
+            nickname   = #{nickname}
         where id = #{id}
     </update>
     <delete id="deleteUser">
@@ -46,7 +55,7 @@
         set status = #{status}
         where id = #{userId};
     </update>
-    <select id="findRolesByUserId" resultType="long">
+    <select id="findRolesByUserId">
         select role_id
         from user_role_rel
         where user_id = #{userId};

@@ -2,6 +2,7 @@ package com.example.demo.interceptors;
 
 import com.example.demo.utils.JWTUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import java.util.Objects;
 /**
  * JWT拦截器实现
  */
+@Slf4j
 public class JWTInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

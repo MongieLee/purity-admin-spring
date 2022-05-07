@@ -2,7 +2,7 @@ package com.example.demo.model.persistent;
 
 import lombok.Data;
 
-import java.time.Instant;
+import java.util.Date;
 
 @Data
 public class RoleDTO {
@@ -11,8 +11,8 @@ public class RoleDTO {
     private String name;
     private String code;
     private String description;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
     private Long userId;
 
 }

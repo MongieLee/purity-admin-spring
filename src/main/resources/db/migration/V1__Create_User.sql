@@ -3,6 +3,7 @@ create table user
     id                 int primary key auto_increment,
     username           varchar(20),
     encrypted_password varchar(100),
+    nickname           varchar(20),
     avatar             varchar(100),
     status             bit,
     created_at         datetime,

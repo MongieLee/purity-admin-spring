@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import java.time.Instant;
-import java.util.List;
+import java.util.Date;
 
 /**
  * 资源Dto实体类
@@ -24,6 +23,6 @@ public class ResourceDto {
     private String description;
     private Long categroyId;
     private String categroyName;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 }

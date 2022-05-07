@@ -3,6 +3,7 @@ package com.example.demo.security;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.utils.JWTUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +18,9 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.TreeSet;
 
-@Component
+// @Component
+// 如果将过滤器注册成Bean，会执行两次，原因是被Spring容器管理，假如了Servlet的filter中，Security先执行过滤器，通过了就会再执行一次Servlet的过滤器
+@Slf4j
 public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -26,8 +29,10 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        // 获取请求头中的token
         String token = request.getHeader("Authorization");
-        // 相当于匿名访问，配合白名单使用，如果是白名单，则直接放行，如果不是白名单，则拒绝访问
+
+        // 没有token相当于匿名访问，配合白名单使用，如果是白名单，则直接放行，如果不是白名单，则拒绝访问
         if (Objects.isNull(token)) {
             chain.doFilter(request, response);
             return;

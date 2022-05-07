@@ -9,12 +9,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
-import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -33,7 +31,6 @@ public class TodayNews {
     private Long id;
 
     @ExcelProperty(value = "标题")
-    @NotNull(message = "标题不能为空")
     @NotBlank(message = "标题不能为空")
     @ApiModelProperty("今日资讯标题")
     private String title;

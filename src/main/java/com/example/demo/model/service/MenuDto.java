@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,5 +30,5 @@ public class MenuDto {
     private String remark;
     private String permission;
     private List<MenuDto> children;
-    private Instant createdAt;
+    private Date createdAt;
 }

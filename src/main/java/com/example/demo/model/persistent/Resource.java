@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import java.time.Instant;
+import java.util.Date;
 
 /**
  * 菜单实体类
@@ -22,6 +22,6 @@ public class Resource {
     private String url;
     private String description;
     private Long categroyId;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 }

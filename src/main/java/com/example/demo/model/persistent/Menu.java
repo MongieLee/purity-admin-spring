@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import java.time.Instant;
+import java.util.Date;
 
 /**
  * 菜单实体类
@@ -28,7 +28,7 @@ public class Menu {
     private String remark;
     private String permission;
     private String createBy;
-    private Instant createdAt;
+    private Date createdAt;
     private String updatedBy;
-    private Instant updatedAt;
+    private Date updatedAt;
 }

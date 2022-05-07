@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
+import java.util.Date;
 
 /**
  * 用户实体类
@@ -24,13 +24,15 @@ public class User {
     @ApiModelProperty(value = "唯一主键Id")
     private Long id;
 
-    @NotBlank(message = "密码不能为空")
-    @NotNull(message = "密码不能为空")
+    @NotBlank(message = "账号不能为空")
     @ApiModelProperty(required = true, example = "test001", value = "账号")
     private String username;
 
+    @NotBlank(message = "昵称不能为空")
+    @ApiModelProperty(required = true, example = "test001", value = "账号")
+    private String nickname;
+
     @JsonIgnore
-    @NotBlank(message = "密码不能为空")
     @NotNull(message = "密码不能为空")
     @ApiModelProperty(required = true, example = "123456", value = "密码")
     private String encryptedPassword;
@@ -39,10 +41,12 @@ public class User {
     private Boolean status;
 
     @ApiModelProperty(example = "2022-01-01 12:00:00", value = "创建时间")
-    private Instant createdAt;
+    private Date createdAt;
 
     @ApiModelProperty(example = "2022-01-01 12:00:00", value = "更新时间")
-    private Instant updatedAt;
+    private Date updatedAt;
+
+    private UserTypeEnum userType;
 
     @ApiModelProperty(value = "头像图片地址")
     private String avatar;

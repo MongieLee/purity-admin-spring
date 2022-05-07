@@ -6,9 +6,8 @@ import com.example.demo.model.persistent.Role;
 import com.example.demo.model.persistent.User;
 import com.example.demo.model.persistent.UserDto;
 import com.example.demo.model.service.result.BaseListResult;
-import com.example.demo.model.service.result.LoginResult;
 import com.example.demo.model.service.result.Result;
-import com.example.demo.model.service.result.UserResult;
+import com.example.demo.model.service.result.Result;
 import com.example.demo.service.UserService;
 import com.github.pagehelper.PageInfo;
 import lombok.*;
@@ -43,7 +42,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = (String) authentication.getPrincipal();
         User userByName = userService.getUserByName(userName);
-        return LoginResult.success("获取用户信息成功", userByName);
+        return Result.success("获取用户信息成功", userByName);
     }
 
     @PutMapping("/{id}")
@@ -51,13 +50,13 @@ public class UserController {
         try {
             User dbUser = userService.getUserById(id);
             if (dbUser == null) {
-                return UserResult.failure("用户不存在");
+                return Result.failure("用户不存在");
             }
             dbUser.setAvatar(user.getAvatar());
-            return UserResult.success("更新用户信息成功", userService.updateUser(dbUser));
+            return Result.success("更新用户信息成功", userService.updateUser(dbUser));
         } catch (Exception e) {
             e.printStackTrace();
-            return UserResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 
@@ -109,7 +108,7 @@ public class UserController {
         try {
             return userService.changeStatus(status, userId);
         } catch (Exception e) {
-            return UserResult.failure(e.getMessage());
+            return Result.failure(e.getMessage());
         }
     }
 

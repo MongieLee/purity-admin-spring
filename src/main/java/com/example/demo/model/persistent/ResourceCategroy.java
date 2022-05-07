@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-import java.time.Instant;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +17,6 @@ public class ResourceCategroy {
     private Long id;
     private String name;
     private Integer sequence;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 }
