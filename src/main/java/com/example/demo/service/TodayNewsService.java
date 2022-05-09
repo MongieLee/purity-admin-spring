@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.read.listener.PageReadListener;
+import com.example.demo.configuration.EnvConfig;
 import com.example.demo.dao.TodayNewsDao;
 import com.example.demo.model.persistent.TodayNews;
 import com.example.demo.model.queryUtil.TodayNewsListQuery;
@@ -10,11 +11,10 @@ import com.example.demo.model.service.result.Result;
 import com.example.demo.utils.ContentUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -26,9 +26,11 @@ import java.util.Objects;
 @Service
 public class TodayNewsService {
     private TodayNewsDao todayNewsDao;
+    private EnvConfig envConfig;
 
-    public TodayNewsService(TodayNewsDao todayNewsDao) {
+    public TodayNewsService(TodayNewsDao todayNewsDao, EnvConfig envConfig) {
         this.todayNewsDao = todayNewsDao;
+        this.envConfig = envConfig;
     }
 
     public Result createNews(TodayNews todayNews) {
@@ -69,14 +71,18 @@ public class TodayNewsService {
      */
     public Result exportData(TodayNewsListQuery query) throws FileNotFoundException {
         String fileName = System.currentTimeMillis() + ".xlsx";
-        FileOutputStream fileOutputStream = new FileOutputStream("D:\\\\" + fileName);
+        File exportFolder = new File(envConfig.getExportFilePath());
+        if (!exportFolder.exists()) {
+            exportFolder.mkdirs();
+        }
+        FileOutputStream fileOutputStream = new FileOutputStream(exportFolder.getAbsolutePath() + File.separator + fileName);
         EasyExcel.write(fileOutputStream, TodayNews.class).sheet("模板")
                 .doWrite(() -> {
                     PageHelper.startPage(query.getPage(), query.getPageSize());
                     return todayNewsDao.getList(query);
                 });
         Map<String, String> pathResult = new HashMap<>();
-        pathResult.put("path", "/exportFile/" + fileName);
+        pathResult.put("path", envConfig.getExportFolder() + fileName);
         return Result.success("导出成功", pathResult);
     }
 

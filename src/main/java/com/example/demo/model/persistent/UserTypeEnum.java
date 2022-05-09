@@ -14,9 +14,6 @@ public enum UserTypeEnum {
         this.code = code;
     }
 
-    UserTypeEnum() {
-    }
-
     public String getType() {
         return type;
     }

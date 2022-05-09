@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -52,19 +53,37 @@ public class AuthController {
         this.authService = authService;
     }
 
+    /**
+     * 注册账号
+     *
+     * @param account 账号名和密码
+     * @return 结果
+     */
+    @ApiOperation(value = "用户注册")
     @PostMapping("/register")
     public Result register(@RequestBody @Validated(AccountModelValid.Register.class) Account account) {
         return userService.register(account);
     }
 
+    /**
+     * 用户登录，返回access_token和refresh_token，以及access_token的过期时间
+     *
+     * @param account
+     * @return
+     */
+    @ApiOperation(value = "用户登录")
     @PostMapping("/login")
-    @ResponseBody
     public Result loggedInUser(@RequestBody @Validated(AccountModelValid.Login.class) Account account) {
         return userService.login(new User().setUsername(account.getUsername()).setEncryptedPassword(account.getPassword()));
     }
 
+    /**
+     * 刷新access_token
+     * @param refreshTokenObj
+     * @return
+     */
+    @ApiOperation(value = "用户刷新JWT凭证")
     @PostMapping("/refreshToken")
-    @ResponseBody
     public Result refreshToken(@RequestBody @Validated RefreshToken refreshTokenObj) {
         return authService.refreshToken(refreshTokenObj);
     }

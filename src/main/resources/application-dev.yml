@@ -24,3 +24,9 @@ pagehelper:
   reasonable: true
   support-methods-arguments: true
   params: count=countSql
+
+env:
+  uploadFilePath: D:\uploadFiles
+  exportFilePath: D:\exportFiles
+  uploadFolder: /uploadFiles/
+  exportFolder: /exportFiles/

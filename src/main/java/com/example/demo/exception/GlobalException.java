@@ -13,6 +13,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -60,10 +61,11 @@ public class GlobalException {
      * @param e 异常
      * @return 错误结果
      */
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(JWTVerificationException.class)
     public Result TokenExceptionHandler(JWTVerificationException e) {
         log.error(e.getMessage());
-        return Result.failure("token校验失败，请检查是否正确或是否过期", e.getMessage());
+        return Result.failure("token校验失败，请检查是否正确或是否过期", HttpStatus.UNAUTHORIZED.value());
     }
 //    @ExceptionHandler(TokenExpiredException.class)
 //    public Result TokenExceptionHandler(TokenExpiredException e) {

@@ -31,7 +31,7 @@ public class AuthService {
 
     public Result refreshToken(RefreshToken refreshTokenObj) {
         String refreshToken = refreshTokenObj.getRefreshToken();
-        String type = refreshTokenObj.getGrantType().getType();
+        String type = refreshTokenObj.getTokenGrantType().getType();
         JWTUtils.verify(refreshToken);
         Map<String, String> map = new HashMap<>();
         DecodedJWT decode = JWT.decode(refreshToken);
