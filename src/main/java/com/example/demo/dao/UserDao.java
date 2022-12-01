@@ -41,6 +41,9 @@ public class UserDao {
     public void updateUser(User user) {
         sqlSession.update("updateUser", user);
     }
+    public void updatePassword(User user) {
+        sqlSession.update("updatePassword", user);
+    }
 
     public List<User> getList(User user) {
         return sqlSession.selectList(getMapperName("getPage"), user);

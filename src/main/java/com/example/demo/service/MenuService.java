@@ -36,7 +36,7 @@ public class MenuService {
         if (byId == null) {
             throw new RuntimeException("菜单不存在");
         }
-        if (menu.getParentId() != byId.getParentId()) {
+        if (!menu.getParentId().equals(byId.getParentId())) {
             List<Menu> sibling = menuDao.getSibling(menu);
             Integer sequence = 0;
             if (sibling.size() > 0) {
@@ -121,7 +121,7 @@ public class MenuService {
         List<MenuDto> treeResult = new ArrayList<>();
         for (MenuDto menu : menuList) {
             for (MenuDto m : menuList) {
-                if (menu.getId() == m.getParentId()) {
+                if (Objects.equals(menu.getId(), m.getParentId())) {
                     m.setParentName(menu.getName());
                     menu.getChildren().add(m);
                 }

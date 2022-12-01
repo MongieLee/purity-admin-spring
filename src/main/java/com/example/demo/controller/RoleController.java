@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dao.RoleDao;
 import com.example.demo.model.persistent.Role;
-import com.example.demo.model.persistent.RoleMenuRel;
+import com.example.demo.model.persistent.RoleDTO;
 import com.example.demo.model.persistent.User;
 import com.example.demo.model.service.result.*;
 import com.example.demo.service.RoleService;
@@ -11,14 +11,12 @@ import com.github.pagehelper.PageInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.val;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 菜单模块
@@ -38,122 +36,106 @@ public class RoleController {
     }
 
     @PostMapping
-    public Result createRole(@RequestBody Role role) {
-        val roleByName = roleService.getRoleByName(role.getName());
+    public JsonResult createRole(@RequestBody RoleDTO role) {
+        Role roleByName = roleService.getRoleByName(role.getName());
         if (roleByName != null) {
-            return Result.failure("创建失败，角色已存在");
+            return JsonResult.failure("创建失败，角色已存在");
         }
-        try {
-            roleService.createRole(role);
-            return Result.success("创建角色成功", roleService.getRoleByName(role.getName()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure(e.getMessage());
-        }
+        roleService.createRole(role);
+        return JsonResult.success("创建角色成功", roleService.getRoleByName(role.getName()));
     }
 
     @GetMapping("/{id}")
-    public Result getRole(@PathVariable Long id) {
-        try {
-            return Result.success("获取角色成功", roleService.getRoleById(id));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure(e.getMessage());
-        }
+    public JsonResult getRole(@PathVariable Long id) {
+        return JsonResult.success("获取角色成功", roleService.getRoleById(id));
     }
 
     @GetMapping("/getAll")
-    public Result getAll() {
-        return Result.success("", roleService.getAllRoles());
+    public JsonResult getAll() {
+        return JsonResult.success("", roleService.getAllRoles());
     }
 
     @GetMapping("/list")
-    public Result getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
-                          @RequestParam(name = "name", required = false) String name) {
+    public JsonResult getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
+                              @RequestParam(name = "name", required = false) String name) {
         if (page < 1) {
             page = 1;
         }
-        val role = new Role().setName(name);
-        val list = roleService.getList(role, page, pageSize);
-        PageInfo<Role> rolePageInfo = new PageInfo<>(list);
-        return BaseListResult.success(list, rolePageInfo.getTotal());
+        List<RoleDTO> roleList = roleService.getList(new Role().setName(name), page, pageSize);
+        PageInfo<RoleDTO> rolePageInfo = new PageInfo<>(roleList);
+        return BaseListResult.success(roleList, rolePageInfo.getTotal());
     }
 
     @PutMapping
-    public Result updateRole(@RequestBody Role role) {
-        try {
-            return Result.success("更新角色成功", roleService.updateRole(role));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure(e.getMessage());
-        }
+    public JsonResult updateRole(@RequestBody RoleDTO roleDTO) {
+        return JsonResult.success("更新角色成功", roleService.updateRole(roleDTO));
     }
 
     @DeleteMapping("/{id}")
-    public Result deleteMenu(@PathVariable("id") Long id) {
+    public JsonResult deleteMenu(@PathVariable("id") Long id) {
         try {
             roleService.deleteRole(id);
-            return Result.success("删除角色成功", (Role) null);
+            return JsonResult.success("删除角色成功", (Role) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
+    /**
+     * 保存角色权限
+     *
+     * @param roleMenuObj
+     * @return
+     */
     @PostMapping("/saveRoleMenus")
-    public Result saveRole(@RequestBody TempRoleMenu roleMenuObj) {
+    public JsonResult saveRole(@RequestBody TempRoleMenu roleMenuObj) {
         List<Long> roleMenus = roleMenuObj.getRoleMenus();
-        try {
-            val roleById = roleDao.getRoleById(roleMenuObj.getRoleId());
-            if (roleById == null) {
-                return Result.failure("角色不存在！");
-            }
-            roleDao.clearMenus(roleMenuObj.getRoleId());
-            if (roleMenuObj.getRoleMenus() != null && roleMenuObj.getRoleMenus().size() > 0) {
-                roleDao.saveRoleMenus(roleMenuObj);
-            }
-            return Result.success("保存成功", (Role) null);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure(e.getMessage());
+        Role roleById = roleDao.getById(roleMenuObj.getRoleId());
+        if (roleById == null) {
+            return JsonResult.failure("角色不存在！");
         }
+        roleDao.clearMenus(roleMenuObj.getRoleId());
+        if (roleMenuObj.getRoleMenus() != null && roleMenuObj.getRoleMenus().size() > 0) {
+            roleDao.saveRoleMenus(roleMenuObj);
+        }
+        return JsonResult.success("保存成功", null);
     }
 
     @GetMapping("/getRoleMenus/{roleId}")
-    public Result getRoleMenus(@PathVariable("roleId") Long roleId) {
-        try {
-            val roleById = roleDao.getRoleById(roleId);
-            if (roleById == null) {
-                return Result.failure("角色不存在！");
-            }
-            val roleMenus = roleDao.getRoleMenus(roleId);
-
-            return Result.success("获取角色菜单成功",
-                    roleMenus.stream().map(RoleMenuRel::getMenuId).collect(Collectors.toList()));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure(e.getMessage());
+    public JsonResult getRoleMenus(@PathVariable("roleId") Long roleId) {
+        Role roleById = roleDao.getById(roleId);
+        if (roleById == null) {
+            return JsonResult.failure("角色不存在！");
         }
+
+
+//            val roleMenus = roleDao.getRoleMenus(roleId);
+
+//        return Result.success("获取角色菜单成功",
+//                roleMenus.stream().map(RoleMenuRel::getMenuId).collect(Collectors.toList()));
+        return JsonResult.success("");
     }
 
     @GetMapping("/getMenusByUserInfo")
-    public Result getMenusByUserInfo() {
+    public JsonResult getMenusByUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = (String) authentication.getPrincipal();
         User userByName = userService.getUserByName(userName);
         roleService.getMenuByUser(userByName);
-        return Result.success("获取用户信息成功", userByName);
+        return JsonResult.success("获取用户信息成功", userByName);
     }
 
+
     @PostMapping("/bindRoles")
-    public Result bindRoles(@RequestBody UserController.UserIdRoles userIdRoles) {
+    public JsonResult bindRoles(@RequestBody UserController.UserIdRoles userIdRoles) {
         System.out.println("userIdRoles");
         System.out.println(userIdRoles);
-        roleDao.cleanRolesByUserId(userIdRoles.getUserId());
-        if (userIdRoles.getRoleIds().equals(null) || userIdRoles.getRoleIds().size() > 0) {
-            roleDao.bindRolesByUserId(userIdRoles);
-        }
-        return Result.success("分配角色成功", null);
+//        roleDao.cleanRolesByUserId(userIdRoles.getUserId());
+//        if (userIdRoles.getRoleIds().equals(null) || userIdRoles.getRoleIds().size() > 0) {
+//            roleDao.bindRolesByUserId(userIdRoles);
+//        }
+        return JsonResult.success("分配角色成功", null);
     }
 
     @Data

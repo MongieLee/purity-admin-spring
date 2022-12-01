@@ -3,11 +3,15 @@ package com.example.demo.controller;
 import com.example.demo.converter.p2s.MenuP2SConverter;
 import com.example.demo.model.persistent.Menu;
 import com.example.demo.model.service.MenuDto;
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.service.MenuService;
 import lombok.val;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 /**
  * 菜单模块
@@ -24,125 +28,121 @@ public class MenuController {
     }
 
     @PostMapping
-    public Result createMenu(@RequestBody Menu menu) {
+    public JsonResult createMenu(@RequestBody Menu menu) {
         MenuDto menuByName = menuService.getMenuByName(menu.getName());
         if (menuByName != null) {
-            return Result.failure("创建失败，菜单已存在");
+            return JsonResult.failure("创建失败，菜单已存在");
         }
         try {
             String userName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             menu.setCreateBy(userName);
             menuService.createMenu(menu);
-            return Result.success("创建菜单成功", menuService.getMenuByName(menu.getName()));
+            return JsonResult.success("创建菜单成功", menuService.getMenuByName(menu.getName()));
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @GetMapping("/tree")
-    public Result tree() {
+    public JsonResult tree() {
         try {
-            return Result.success("获取菜单成功", menuService.tree());
+            return JsonResult.success("获取菜单成功", menuService.tree());
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @GetMapping("/tree/{id}")
-    public Result tree(@PathVariable("id") Long id) {
-        try {
-            return Result.success("获取菜单成功", menuService.tree());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure(e.getMessage());
-        }
+    public JsonResult tree(@PathVariable("id") Long id) {
+        return JsonResult.success("获取菜单成功", menuService.tree());
     }
 
     @GetMapping("/{id}")
-    public Result getMenu(@PathVariable Long id) {
-        try {
-            return Result.success("获取菜单成功", menuService.getMenuById(id));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.failure(e.getMessage());
-        }
+    public JsonResult getMenu(@PathVariable Long id) {
+        return JsonResult.success("获取菜单成功", menuService.getMenuById(id));
     }
 
     @PutMapping("/{id}")
-    public Result updateUser(@PathVariable("id") Long id, @RequestBody Menu menu) {
+    public JsonResult updateUser(@PathVariable("id") Long id, @RequestBody Menu menu) {
         try {
             String userName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             menu.setUpdatedBy(userName);
-            return Result.success("更新菜单成功", menuService.updateMenu(id, menu));
+            return JsonResult.success("更新菜单成功", menuService.updateMenu(id, menu));
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public Result deleteMenu(@PathVariable("id") Long id) {
+    public JsonResult deleteMenu(@PathVariable("id") Long id) {
         try {
             menuService.deleteMenu(id);
-            return Result.success("删除菜单成功", (MenuDto) null);
+            return JsonResult.success("删除菜单成功", (MenuDto) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @PostMapping("/moveUp/{id}")
-    public Result moveUp(@PathVariable("id") Long id) {
+    public JsonResult moveUp(@PathVariable("id") Long id) {
         try {
             menuService.moveUp(menuP2SConverter.reverse().convert(menuService.getMenuById(id)));
-            return Result.success("上移成功", (MenuDto) null);
+            return JsonResult.success("上移成功", (MenuDto) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @PostMapping("/moveDown/{id}")
-    public Result moveDown(@PathVariable("id") Long id) {
+    public JsonResult moveDown(@PathVariable("id") Long id) {
         try {
             menuService.moveDown(menuP2SConverter.reverse().convert(menuService.getMenuById(id)));
-            return Result.success("下移成功", (MenuDto) null);
+            return JsonResult.success("下移成功", (MenuDto) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
 
     @PostMapping("/moveToStar/{id}")
-    public Result moveToStar(@PathVariable("id") Long id) {
+    public JsonResult moveToStar(@PathVariable("id") Long id) {
         try {
             val byId = menuService.getMenuById(id);
             menuService.moveToStar(menuP2SConverter.reverse().convert(byId));
-            return Result.success("已将菜单【" + byId.getName() + "】移至当前层级第一位", (MenuDto) null);
+            return JsonResult.success("已将菜单【" + byId.getName() + "】移至当前层级第一位", (MenuDto) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @PostMapping("/moveToEnd/{id}")
-    public Result moveToEnd(@PathVariable("id") Long id) {
+    public JsonResult moveToEnd(@PathVariable("id") Long id) {
         try {
             val byId = menuService.getMenuById(id);
             menuService.moveToEnd(menuP2SConverter.reverse().convert(byId));
-            return Result.success("已将菜单【" + byId.getName() + "】移至当前层级最后一位", (MenuDto) null);
+            return JsonResult.success("已将菜单【" + byId.getName() + "】移至当前层级最后一位", (MenuDto) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @GetMapping("/getUserMenus/{userId}")
-    public Result getUserMenus(@PathVariable("userId") Long userId) {
+    public JsonResult getUserMenus(@PathVariable("userId") Long userId) {
         System.out.println("用户ID:" + userId);
-        return Result.success("获取用户菜单成功", menuService.getUserMenus(userId));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        String name = authentication.getName();
+        Collection<? extends GrantedAuthority> a = authentication.getAuthorities();
+        Object credentials = authentication.getCredentials();
+        Object details = authentication.getDetails();
+        return JsonResult.success("获取用户菜单成功", menuService.getUserMenus(userId));
     }
 }

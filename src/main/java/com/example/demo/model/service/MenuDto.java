@@ -1,5 +1,6 @@
 package com.example.demo.model.service;
 
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,13 @@ public class MenuDto {
     private String icon;
     private String parentName;
     private Character menuType;
+    private Boolean isLink;
     private Integer sequence;
     private Boolean visible;
+    private Boolean state;
     private String remark;
     private String permission;
     private List<MenuDto> children;
+    @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
 }

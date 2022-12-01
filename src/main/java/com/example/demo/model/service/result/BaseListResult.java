@@ -19,7 +19,7 @@ public class BaseListResult {
         this.records = records;
     }
 
-    public static Result success(List records, Long total) {
-        return new Result(200, true, "获取列表成功", new BaseListResult(total, records));
+    public static JsonResult success(List records, Long total) {
+        return new JsonResult(200, true, "获取列表成功", new BaseListResult(total, records));
     }
 }

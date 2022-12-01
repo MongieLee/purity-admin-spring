@@ -16,7 +16,7 @@ public class UserP2SConverter extends Converter<User, UserDto> {
                 .setNickname(user.getNickname())
                 .setAvatar(user.getAvatar())
                 .setStatus(user.getStatus())
-                .setUserType(user.getUserType())
+//                .setUserType(user.getUserType())
                 .setCreatedAt(user.getCreatedAt())
                 .setUpdatedAt(user.getUpdatedAt());
     }
@@ -29,7 +29,7 @@ public class UserP2SConverter extends Converter<User, UserDto> {
                 .setNickname(userDto.getNickname())
                 .setAvatar(userDto.getAvatar())
                 .setStatus(userDto.getStatus())
-                .setUserType(userDto.getUserType())
+//                .setUserType(userDto.getUserType())
                 .setCreatedAt(userDto.getCreatedAt())
                 .setUpdatedAt(userDto.getUpdatedAt());
     }

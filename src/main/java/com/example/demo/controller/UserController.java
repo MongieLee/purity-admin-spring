@@ -6,14 +6,15 @@ import com.example.demo.model.persistent.Role;
 import com.example.demo.model.persistent.User;
 import com.example.demo.model.persistent.UserDto;
 import com.example.demo.model.service.result.BaseListResult;
-import com.example.demo.model.service.result.Result;
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.service.UserService;
 import com.github.pagehelper.PageInfo;
 import lombok.*;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -38,31 +39,56 @@ public class UserController {
     }
 
     @GetMapping("/info")
-    public Result getUserInfo() {
+    public JsonResult getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = (String) authentication.getPrincipal();
         User userByName = userService.getUserByName(userName);
-        return Result.success("获取用户信息成功", userByName);
+        return JsonResult.success("获取用户信息成功", userByName);
     }
 
+    @GetMapping("/{id}")
+    public JsonResult getUserInfo(@PathVariable Long id) {
+        return JsonResult.success("获取用户信息成功", userService.getUserById(id));
+    }
+
+    @PutMapping("/updatePassword")
+    public JsonResult updatePassword(@RequestBody Map mimas, @Autowired BCryptPasswordEncoder bCryptPasswordEncoder) {
+        String newPassword = (String) mimas.get("newPassword");
+        String oldPassword = (String) mimas.get("oldPassword");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        User userByName = userService.getUserByName(username);
+        if (bCryptPasswordEncoder.matches(oldPassword,userByName.getEncryptedPassword())) {
+            System.out.println("旧密码相同，可以修改");
+            userByName.setEncryptedPassword(bCryptPasswordEncoder.encode(newPassword));
+            userService.updatePassword(userByName);
+            return JsonResult.success("修改密码成功");
+        } else {
+            System.out.println();
+            return JsonResult.failure("修改失败，密码错误");
+        }
+    }
+
+    ;
+
     @PutMapping("/{id}")
-    public Result updateUser(@PathVariable("id") Long id, @RequestBody User user) {
+    public JsonResult updateUser(@PathVariable("id") Long id, @RequestBody User user) {
         try {
             User dbUser = userService.getUserById(id);
             if (dbUser == null) {
-                return Result.failure("用户不存在");
+                return JsonResult.failure("用户不存在");
             }
             dbUser.setAvatar(user.getAvatar());
-            return Result.success("更新用户信息成功", userService.updateUser(dbUser));
+            return JsonResult.success("更新用户信息成功", userService.updateUser(dbUser));
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @GetMapping("/list")
-    public Result getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
-                          @RequestParam(name = "username", required = false) String username) {
+    public JsonResult getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
+                              @RequestParam(name = "username", required = false) String username) {
         if (page < 1) {
             page = 1;
         }
@@ -95,20 +121,20 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public Result updateUser(@PathVariable("id") Long id) {
+    public JsonResult updateUser(@PathVariable("id") Long id) {
         return userService.deleteUser(id);
     }
 
     @PostMapping("/status")
-    public Result changeStatus(@RequestBody Map<String, Object> statusAndId) {
-        byte status = ((Number) statusAndId.get("status")).byteValue();
+    public JsonResult changeStatus(@RequestBody Map<String, Object> statusAndId) {
+        Byte status = ((Number) statusAndId.get("status")).byteValue();
         Long userId = ((Number) statusAndId.get("userId")).longValue();
         System.out.println(status);
         System.out.println(userId);
         try {
             return userService.changeStatus(status, userId);
         } catch (Exception e) {
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 

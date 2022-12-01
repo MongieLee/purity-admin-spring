@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.model.persistent.User;
 import com.example.demo.model.service.RefreshToken;
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.utils.JWTUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class AuthService {
         return Optional.ofNullable(userService.getUserByName(name));
     }
 
-    public Result refreshToken(RefreshToken refreshTokenObj) {
+    public JsonResult refreshToken(RefreshToken refreshTokenObj) {
         String refreshToken = refreshTokenObj.getRefreshToken();
         String type = refreshTokenObj.getTokenGrantType().getType();
         JWTUtils.verify(refreshToken);
@@ -51,6 +51,6 @@ public class AuthService {
 //        }
 //        // 第一次则直接添加
 //        redisHashMap.put(REFRESH_TOKEN, userId, tokenResult.get(REFRESH_TOKEN));
-        return Result.success("刷新令牌成功", tokenResult);
+        return JsonResult.success("刷新令牌成功", tokenResult);
     }
 }

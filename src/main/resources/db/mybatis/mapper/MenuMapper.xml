@@ -5,26 +5,28 @@
     <insert id="createMenu" parameterType="Menu">
         insert into menu
         (name, path, parent_id, menu_type, visible, `icon`, sequence, remark, permission, created_by, created_at,
-         updated_at)
+         updated_at, is_link, state)
         values (#{name}, #{path}, #{parentId}, #{menuType}, #{visible}, #{icon}, #{sequence}, #{remark}, #{permission},
-                #{createBy}, now(), now())
+                #{createBy}, now(), now(), #{isLink}, #{state})
     </insert>
     <update id="updateMenu" parameterType="Menu">
         update menu
-        set name=#{name},
-            path=#{path},
-            parent_id=#{parentId},
-            sequence=#{sequence},
-            remark=#{remark},
+        set `name`=#{name},
+            `path`=#{path},
+            `parent_id`=#{parentId},
+            `sequence`=#{sequence},
+            `remark`=#{remark},
             `icon`=#{icon},
             `visible`=#{visible},
             `menu_type`=#{menuType},
-            permission=#{permission},
-            updated_by = #{updatedBy},
-            updated_at = now()
+            `permission`=#{permission},
+            `updated_by` = #{updatedBy},
+            `updated_at` = now(),
+            `is_link`=#{isLink},
+            `state`=#{state},
         where id = #{id}
     </update>
-    <select id="getMenuById" resultType="Menu">
+    <select id="getMenuById" resultType="menu">
         select *
         from menu
         where id = #{id}

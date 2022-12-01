@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.DepartmentDao">
+    <sql id="base_select">
+        select id,
+               name,
+               parent_id,
+               sequence,
+               principal,
+               phone_number,
+               state,
+               created_at,
+               updated_at
+        from t_department
+    </sql>
+    <select id="getAll" resultType="department">
+        <include refid="base_select"/>
+    </select>
+    <select id="getById" resultType="department">
+        <include refid="base_select"/>
+        where id = #{id}
+    </select>
+    <select id="getByName" resultType="department">
+        <include refid="base_select"/>
+        where name = #{name}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into t_department(
+        <if test="name != null and name != ''">name,</if>
+        <if test="parentId != null and parentId != 0">parent_id,</if>
+        <if test="sequence != null and sequence != 0">sequence,</if>
+        <if test="principal != null and principal != ''">principal,</if>
+        <if test="phoneNumber != null and phoneNumber != ''">phone_number,</if>
+        <if test="state != null">state,</if>
+        created_at, updated_at)
+        values (
+        <if test="name != null and name != ''">#{name},</if>
+        <if test="parentId != null and parentId != 0">#{parentId},</if>
+        <if test="sequence != null and sequence != 0">#{sequence},</if>
+        <if test="principal != null and principal != ''">#{principal},</if>
+        <if test="phoneNumber != null and phoneNumber != ''">#{phoneNumber},</if>
+        <if test="state != null">#{state},</if>
+        now(),now())
+    </insert>
+    <update id="update">
+        update t_department set
+        <if test="name != null and name != ''">name = #{name},</if>
+        <if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
+        <if test="sequence != null and sequence != 0">`sequence` = #{sequence},</if>
+        <if test="principal != null and principal != ''">principal = #{principal},</if>
+        <if test="phoneNumber != null and phoneNumber != ''">phone_number = #{phoneNumber},</if>
+        <if test="state != null">`state` = #{state},</if>
+        updated_at = now() where id = #{id};
+    </update>
+    <delete id="delete">
+        delete
+        from t_department
+        where id = #{depId}
+    </delete>
+</mapper>

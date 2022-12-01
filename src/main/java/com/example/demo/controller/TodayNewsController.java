@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dao.TodayNewsDao;
 import com.example.demo.model.persistent.TodayNews;
 import com.example.demo.model.queryUtil.TodayNewsListQuery;
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.service.TodayNewsService;
 import com.example.demo.utils.ContentUtils;
 import com.example.demo.utils.PageUtils;
@@ -41,7 +40,7 @@ public class TodayNewsController {
      */
     @ApiOperation(value = "创建今日资讯")
     @PostMapping
-    public Result createNews(@RequestBody @Validated(TodayNewsModelValid.Create.class) @ApiParam(value = "TodayNews实体类", required = true) TodayNews todayNews) {
+    public JsonResult createNews(@RequestBody @Validated(TodayNewsModelValid.Create.class) @ApiParam(value = "TodayNews实体类", required = true) TodayNews todayNews) {
         todayNews.setCreatedBy(ContentUtils.getCurrentAccessUsername());
         return todayNewsService.createNews(todayNews);
     }
@@ -54,7 +53,7 @@ public class TodayNewsController {
      */
     @ApiOperation("更新资讯")
     @PutMapping
-    public Result updateNews(@RequestBody @Validated(TodayNewsModelValid.Update.class) @ApiParam(value = "TodayNews实体类", required = true) TodayNews todayNews) {
+    public JsonResult updateNews(@RequestBody @Validated(TodayNewsModelValid.Update.class) @ApiParam(value = "TodayNews实体类", required = true) TodayNews todayNews) {
         return todayNewsService.updateNews(todayNews);
     }
 
@@ -67,7 +66,7 @@ public class TodayNewsController {
     @ApiOperation("发布资讯")
     @ApiImplicitParam(name = "id", value = "资讯Id", paramType = "path", required = true)
     @PostMapping("/publish/{id}")
-    public Result publish(@PathVariable Long id, HttpServletRequest request) {
+    public JsonResult publish(@PathVariable Long id, HttpServletRequest request) {
         return todayNewsService.publish(id);
     }
 
@@ -79,7 +78,7 @@ public class TodayNewsController {
      */
     @ApiOperation("取消发布资讯")
     @PostMapping("/cancelPublish/{id}")
-    public Result cancelPublish(@PathVariable("id") @ApiParam(value = "资讯Id", required = true) Long id) {
+    public JsonResult cancelPublish(@PathVariable("id") @ApiParam(value = "资讯Id", required = true) Long id) {
         return todayNewsService.cancelPublish(id);
     }
 
@@ -91,7 +90,7 @@ public class TodayNewsController {
      */
     @ApiOperation("删除资讯")
     @DeleteMapping("/{id}")
-    public Result deleteNews(@PathVariable("id") @ApiParam(value = "资讯Id", required = true) Long id) {
+    public JsonResult deleteNews(@PathVariable("id") @ApiParam(value = "资讯Id", required = true) Long id) {
         return todayNewsService.deleteNews(id);
     }
 
@@ -103,7 +102,7 @@ public class TodayNewsController {
      */
     @ApiOperation("根据资讯Id获取资讯内容")
     @GetMapping("/{id}")
-    public Result getNewsById(@PathVariable("id") @ApiParam(value = "资讯Id", required = true) Long id) {
+    public JsonResult getNewsById(@PathVariable("id") @ApiParam(value = "资讯Id", required = true) Long id) {
         return todayNewsService.getNewsById(id);
     }
 
@@ -115,7 +114,7 @@ public class TodayNewsController {
      */
     @ApiOperation("获取资讯列表（分页）")
     @GetMapping("/list")
-    public Result getList(@ApiParam(value = "分页查询参数") TodayNewsListQuery query) {
+    public JsonResult getList(@ApiParam(value = "分页查询参数") TodayNewsListQuery query) {
         PageUtils.handleQuery(query);
         return todayNewsService.getList(query);
     }
@@ -129,7 +128,7 @@ public class TodayNewsController {
      */
     @ApiOperation("导出excel")
     @GetMapping("/export")
-    public Result exportExcelData(@ApiParam(value = "分页查询参数") TodayNewsListQuery query) throws FileNotFoundException {
+    public JsonResult exportExcelData(@ApiParam(value = "分页查询参数") TodayNewsListQuery query) throws FileNotFoundException {
         PageUtils.handleQuery(query);
         return todayNewsService.exportData(query);
     }
@@ -142,7 +141,7 @@ public class TodayNewsController {
      */
     @ApiOperation("批量导入excel数据")
     @PostMapping("/batchImport")
-    public Result batchInsert(@RequestParam("FormFile") @ApiParam(value = "Excel文件", required = true) MultipartFile file) throws IOException {
+    public JsonResult batchInsert(@RequestParam("FormFile") @ApiParam(value = "Excel文件", required = true) MultipartFile file) throws IOException {
         return todayNewsService.batchInsert(file);
     }
 }

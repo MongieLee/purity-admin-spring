@@ -1,19 +1,15 @@
 package com.example.demo.exception;
 
-import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -30,17 +26,17 @@ public class GlobalException {
      * @return 错误结果
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result paramExceptionHandler(MethodArgumentNotValidException e) {
+    public JsonResult paramExceptionHandler(MethodArgumentNotValidException e) {
         log.error(e.getMessage());
         BindingResult bindingResult = e.getBindingResult();
         if (bindingResult.hasErrors()) {
             List<ObjectError> allErrors = bindingResult.getAllErrors();
             if (!allErrors.isEmpty()) {
                 // 可能有多个校验异常，取第一个异常信息即可
-                return Result.failure(allErrors.get(0).getDefaultMessage());
+                return JsonResult.failure(allErrors.get(0).getDefaultMessage());
             }
         }
-        return Result.failure("请求失败");
+        return JsonResult.failure("请求失败");
     }
 
     /**
@@ -50,9 +46,9 @@ public class GlobalException {
      * @return 错误结果
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public Result missingRequestBodyExceptionHandler(HttpMessageNotReadableException e) {
+    public JsonResult missingRequestBodyExceptionHandler(HttpMessageNotReadableException e) {
         log.error(e.getMessage());
-        return Result.failure("参数解析失败，请检查接口传参是否正确", e.getMessage());
+        return JsonResult.failure("参数解析失败，请检查接口传参是否正确", e.getMessage());
     }
 
     /**
@@ -63,9 +59,9 @@ public class GlobalException {
      */
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(JWTVerificationException.class)
-    public Result TokenExceptionHandler(JWTVerificationException e) {
+    public JsonResult TokenExceptionHandler(JWTVerificationException e) {
         log.error(e.getMessage());
-        return Result.failure("token校验失败，请检查是否正确或是否过期", HttpStatus.UNAUTHORIZED.value());
+        return JsonResult.failure("token校验失败，请检查是否正确或是否过期", HttpStatus.UNAUTHORIZED.value());
     }
 //    @ExceptionHandler(TokenExpiredException.class)
 //    public Result TokenExceptionHandler(TokenExpiredException e) {
@@ -85,9 +81,9 @@ public class GlobalException {
      * @return 错误结果
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public Result TokenExceptionHandler(HttpRequestMethodNotSupportedException e) {
+    public JsonResult TokenExceptionHandler(HttpRequestMethodNotSupportedException e) {
         log.error(e.getMessage());
-        return Result.failure("请求方法类型错误", e.getMessage());
+        return JsonResult.failure("请求方法类型错误", e.getMessage());
     }
 
     /**
@@ -97,8 +93,10 @@ public class GlobalException {
      * @return 错误结果
      */
     @ExceptionHandler(Throwable.class)
-    public Result baseErrorHandler(Throwable t) {
+    public JsonResult baseErrorHandler(Throwable t) {
+        log.error("出现异常");
         log.error(t.getMessage());
-        return Result.failure(t.getMessage());
+        t.printStackTrace();
+        return JsonResult.failure(t.getMessage());
     }
 }

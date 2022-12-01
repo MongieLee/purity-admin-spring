@@ -4,7 +4,7 @@ import com.example.demo.converter.p2s.MenuP2SConverter;
 import com.example.demo.model.persistent.Resource;
 import com.example.demo.model.service.ResourceDto;
 import com.example.demo.model.service.result.BaseListResult;
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.service.MenuService;
 import com.example.demo.service.ResourceService;
 import com.github.pagehelper.PageInfo;
@@ -33,24 +33,24 @@ public class ResourceController {
     }
 
     @PostMapping
-    public Result createResource(@RequestBody Resource resource) {
+    public JsonResult createResource(@RequestBody Resource resource) {
         val resourceByName = resourceService.getResourceByName(resource.getName());
         if (resourceByName != null) {
-            return Result.failure("创建失败，资源已存在");
+            return JsonResult.failure("创建失败，资源已存在");
         }
         try {
             resourceService.createResource(resource);
-            return Result.success("创建资源成功", resourceService.getResourceByName(resource.getName()));
+            return JsonResult.success("创建资源成功", resourceService.getResourceByName(resource.getName()));
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @GetMapping("/list")
-    public Result getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
-                          @RequestParam(name = "name", required = false) String name, @RequestParam(name = "url", required = false) String url,
-                          @RequestParam(name = "categroyId", required = false) Long categroyId) {
+    public JsonResult getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
+                              @RequestParam(name = "name", required = false) String name, @RequestParam(name = "url", required = false) String url,
+                              @RequestParam(name = "categroyId", required = false) Long categroyId) {
         if (page == null || page < 1) {
             page = 1;
         }
@@ -62,38 +62,38 @@ public class ResourceController {
     }
 
     @GetMapping("/{id}")
-    public Result getMenu(@PathVariable Long id) {
+    public JsonResult getMenu(@PathVariable Long id) {
         try {
-            return Result.success("获取资源成功", resourceService.getResourceById(id));
+            return JsonResult.success("获取资源成功", resourceService.getResourceById(id));
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @PutMapping
-    public Result updateUser(@RequestBody Resource resource) {
+    public JsonResult updateUser(@RequestBody Resource resource) {
         try {
-            return Result.success("更新资源成功", resourceService.updateResource(resource));
+            return JsonResult.success("更新资源成功", resourceService.updateResource(resource));
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public Result deleteMenu(@PathVariable("id") Long id) {
+    public JsonResult deleteMenu(@PathVariable("id") Long id) {
         try {
             resourceService.deleteResource(id);
-            return Result.success("删除菜单成功", (ResourceDto) null);
+            return JsonResult.success("删除菜单成功", (ResourceDto) null);
         } catch (Exception e) {
             e.printStackTrace();
-            return Result.failure(e.getMessage());
+            return JsonResult.failure(e.getMessage());
         }
     }
 
     @GetMapping("/getResourceGroup")
-    public Result getResourceGroup() {
+    public JsonResult getResourceGroup() {
         List<Resource> allResource = resourceService.getAllResource();
         List<Object> list = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
@@ -109,6 +109,6 @@ public class ResourceController {
             }
         });
         System.out.println(map);
-        return Result.success("", null);
+        return JsonResult.success("", null);
     }
 }

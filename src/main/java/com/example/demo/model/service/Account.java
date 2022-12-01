@@ -29,9 +29,9 @@ public class Account {
     private String password;
 
     private String avatar;
-
-    @JsonDeserialize(using = GrantTypeDeserializer.class)
-    @CustomEnumValidator(groups = AccountModelValid.Login.class, value = RefreshToken.TokenGrantType.class, message = "tokenGrantType字段应该为access_token", expectValue = "access_token")
-    @ApiModelProperty(value = "请求类型，登录时需要传入【access_token】")
-    private RefreshToken.TokenGrantType tokenGrantType;
+//
+//    @JsonDeserialize(using = GrantTypeDeserializer.class)
+//    @CustomEnumValidator(groups = AccountModelValid.Login.class, value = RefreshToken.TokenGrantType.class, message = "tokenGrantType字段应该为access_token", expectValue = "access_token")
+//    @ApiModelProperty(value = "请求类型，登录时需要传入【access_token】")
+//    private RefreshToken.TokenGrantType tokenGrantType;
 }

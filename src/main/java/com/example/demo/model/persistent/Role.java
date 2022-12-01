@@ -7,6 +7,7 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 菜单实体类
@@ -20,6 +21,7 @@ public class Role {
     private Long id;
     private String name;
     private String code;
+    private Boolean state;
     private String description;
     private Date createdAt;
     private Date updatedAt;

@@ -6,8 +6,8 @@
         <id column="id" property="id"></id>
         <!--        <result column="user_type" property="userType"-->
         <!--                typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"></result>-->
-        <result column="user_type" property="userType"
-                typeHandler="com.example.demo.model.UserEnumTypeHandler"></result>
+        <!--        <result column="user_type" property="userType"-->
+        <!--                typeHandler="com.example.demo.model.UserEnumTypeHandler"></result>-->
     </resultMap>
     <select id="login" parameterType="User">
         select *
@@ -15,11 +15,16 @@
         where id = #{username}
           and encryptedPassword = #{encryptedPassword}
     </select>
+    <!--    <insert id="register">-->
+    <!--        insert into user-->
+    <!--        (username, encrypted_password, nickname, avatar, status, user_type, created_at, updated_at)-->
+    <!--        values (#{username}, #{encryptedPassword}, #{nickname}, #{avatar}, 1,-->
+    <!--                #{userType,typeHandler=com.example.demo.model.UserEnumTypeHandler}, now(), now())-->
+    <!--    </insert>-->
     <insert id="register">
         insert into user
-        (username, encrypted_password, nickname, avatar, status, user_type, created_at, updated_at)
-        values (#{username}, #{encryptedPassword}, #{nickname}, #{avatar}, 1,
-                #{userType,typeHandler=com.example.demo.model.UserEnumTypeHandler}, now(), now())
+        (username, encrypted_password, nickname, avatar, status, created_at, updated_at)
+        values (#{username}, #{encryptedPassword}, #{nickname}, #{avatar}, 1, now(), now())
     </insert>
     <select id="getUserById" resultType="User">
         select *
@@ -43,6 +48,11 @@
         SET avatar     = #{avatar},
             updated_at = now(),
             nickname   = #{nickname}
+        where id = #{id}
+    </update>
+    <update id="updatePassword" parameterType="user">
+        UPDATE user
+        set encrypted_password = #{encryptedPassword}
         where id = #{id}
     </update>
     <delete id="deleteUser">

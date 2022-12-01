@@ -3,7 +3,6 @@ package com.example.demo.model;
 import com.example.demo.model.persistent.UserTypeEnum;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import sun.reflect.generics.visitor.TypeTreeVisitor;
 
 import java.sql.*;
 import java.util.Objects;

@@ -1,5 +1,6 @@
 package com.example.demo.model.persistent;
 
+import com.alibaba.excel.annotation.format.DateTimeFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,11 @@ public class Menu {
     private String remark;
     private String permission;
     private String createBy;
+    private Boolean state;
+    private Boolean isLink;
+    @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
     private String updatedBy;
+    @DateTimeFormat("yyyy-MM-dd HH:mm:ss")
     private Date updatedAt;
 }

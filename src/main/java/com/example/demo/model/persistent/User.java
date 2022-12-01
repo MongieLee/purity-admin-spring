@@ -46,7 +46,7 @@ public class User {
     @ApiModelProperty(example = "2022-01-01 12:00:00", value = "更新时间")
     private Date updatedAt;
 
-    private UserTypeEnum userType;
+//    private UserTypeEnum userType;
 
     @ApiModelProperty(value = "头像图片地址")
     private String avatar;

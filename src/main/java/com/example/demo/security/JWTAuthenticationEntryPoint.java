@@ -1,6 +1,6 @@
 package com.example.demo.security;
 
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json;charset=UTF-8");
-        Result failure = Result.failure("鉴权失败，请登录！", HttpStatus.UNAUTHORIZED.value());
+        JsonResult failure = JsonResult.failure("鉴权失败，请登录！", HttpStatus.UNAUTHORIZED.value());
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         log.error(authException.getMessage());
         PrintWriter writer = response.getWriter();

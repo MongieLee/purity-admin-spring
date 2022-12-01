@@ -1,18 +1,22 @@
 package com.example.demo.configuration;
 
+import com.example.demo.converter.p2s.RoleP2SConverter;
 import com.example.demo.interceptors.JWTInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * 跨域相关配置
  */
 @Configuration
+@EnableTransactionManagement
 public class WebConfig implements WebMvcConfigurer {
     private CorsConfiguration buildConfig() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
@@ -31,6 +35,11 @@ public class WebConfig implements WebMvcConfigurer {
         return new CorsFilter(source);
     }
 
+
+    @Bean
+    public RoleP2SConverter roleP2SConverter() {
+        return new RoleP2SConverter();
+    }
 //    @Override
 //    public void addCorsMappings(CorsRegistry registry) {
 //        registry.addMapping("/**")
@@ -47,7 +56,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new JWTInterceptor())
-                .excludePathPatterns("/api/v1/auth/**", "/error", "/uploadFiles/**", "/error/**",
-                        "/swagger-ui.html", "/csrf", "/webjars/**", "/swagger-resources/**", "/swagger-ui.html/**", "/v2/*");
+                .excludePathPatterns("/test/**", "/uploadFiles/**", "/api/v1/auth/**", "/error", "/uploadFiles/**", "/error/**",
+                        "/swagger-ui.html", "/csrf", "/webjars/**", "/swagger-resources/**", "/swagger-ui.html/**", "/v2/*", "/aaa");
     }
 }

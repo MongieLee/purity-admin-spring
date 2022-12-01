@@ -2,17 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.dao.RoleDao;
 import com.example.demo.dao.UserDao;
-import com.example.demo.exception.CustomException;
+import com.example.demo.exception.ServiceBusinessException;
 import com.example.demo.model.persistent.RoleDTO;
 import com.example.demo.model.persistent.Role;
 import com.example.demo.model.persistent.User;
-import com.example.demo.model.persistent.UserTypeEnum;
 import com.example.demo.model.service.Account;
-import com.example.demo.model.service.result.Result;
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.utils.JWTUtils;
 import com.github.pagehelper.PageHelper;
-import lombok.val;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -79,21 +76,21 @@ public class UserService {
      * @param user 用戶实体
      * @return 用户信息
      */
-    public Result login(User user) {
+    public JsonResult login(User user) {
         User dbUser = getUserByName(user.getUsername());
         String loginUsername = user.getUsername();
         if (Objects.isNull(dbUser)) {
-            throw new CustomException("用户【" + loginUsername + "】不存在");
+            throw new ServiceBusinessException("用户【" + loginUsername + "】不存在");
         }
         if (!bCryptPasswordEncoder.matches(user.getEncryptedPassword(), dbUser.getEncryptedPassword())) {
             throw new BadCredentialsException("密码错误");
         }
         if (!dbUser.getStatus()) {
-            throw new CustomException("登录失败，账号被封禁，请联系管理员");
+            throw new ServiceBusinessException("登录失败，账号被封禁，请联系管理员");
         }
 
         // 往redis中存refreshToken
-        return Result.success("登录成功", cacheInRedis(dbUser));
+        return JsonResult.success("登录成功", cacheInRedis(dbUser));
     }
 
     /**
@@ -140,16 +137,16 @@ public class UserService {
      * @param account 账号密码
      * @return 注册结果
      */
-    public Result register(Account account) {
+    public JsonResult register(Account account) {
         try {
             userDao.register(new User().setUsername(account.getUsername())
-                    .setNickname(getRandomChineseCharacters(4))
-                    .setEncryptedPassword(bCryptPasswordEncoder.encode(account.getPassword()))
-                    .setUserType(UserTypeEnum.DEFAULT_USER)
+                            .setNickname(getRandomChineseCharacters(4))
+                            .setEncryptedPassword(bCryptPasswordEncoder.encode(account.getPassword()))
+//                    .setUserType(UserTypeEnum.DEFAULT_USER)
             );
-            return Result.success("注册成功!");
+            return JsonResult.success("注册成功!");
         } catch (DuplicateKeyException e) {
-            return Result.failure("用户已注册");
+            return JsonResult.failure("用户已注册");
         }
     }
 
@@ -172,13 +169,13 @@ public class UserService {
      * @param id 用户Id
      * @return JSON响应实体
      */
-    public Result deleteUser(Long id) {
+    public JsonResult deleteUser(Long id) {
         User userById = userDao.findUserById(id);
         if (userById == null) {
-            return Result.failure("用户不存在");
+            return JsonResult.failure("用户不存在");
         }
         userDao.deleteUser(id);
-        return Result.success("删除成功");
+        return JsonResult.success("删除成功");
     }
 
     /**
@@ -188,31 +185,36 @@ public class UserService {
      * @param userId 用户ID
      * @return JSON响应实体
      */
-    public Result changeStatus(byte status, Long userId) {
+    public JsonResult changeStatus(byte status, Long userId) {
         User userById = userDao.findUserById(userId);
         if (userById == null) {
-            return Result.failure("用户不存在");
+            return JsonResult.failure("用户不存在");
         }
         userDao.changeStatus(status, userId);
-        return Result.success("用户【" + userById.getUsername() + "】账号状态修改成功");
+        return JsonResult.success("用户【" + userById.getUsername() + "】账号状态修改成功");
     }
 
     public List<Role> getUserRoles(Long userId) {
         List<Long> roleIds = userDao.findRolesByUserId(userId);
         List<Role> roles = new ArrayList<>();
         roleIds.forEach(roleId -> {
-            val roleById = roleDao.getRoleById(roleId);
+            Role roleById = roleDao.getById(roleId);
             roles.add(roleById);
         });
         return roles;
     }
 
     public List<RoleDTO> getUserRolesByUserId(List<Long> userIds) {
-        return roleDao.getUserRolesByUserId(userIds);
+//        return roleDao.getUserRolesByUserId(userIds);
+        return null;
     }
 
 
-    public Result refreshToken(String s) {
-        return Result.success("刷新成功", null);
+    public void updatePassword(User user) {
+        userDao.updatePassword(user);
+    }
+
+    public JsonResult refreshToken(String s) {
+        return JsonResult.success("刷新成功", null);
     }
 }

@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.configuration.EnvConfig;
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.UUID;
-import java.util.logging.SimpleFormatter;
 
 @RestController
 @RequestMapping("/v1/file")
@@ -26,7 +24,7 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public Result upload(@RequestParam("FormFile") MultipartFile file, @RequestParam("FileName") String filename) throws IOException {
+    public JsonResult upload(@RequestParam("FormFile") MultipartFile file, @RequestParam("FileName") String filename) throws IOException {
         String uploadPathFile = envConfig.getUploadFilePath();
 
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -40,6 +38,6 @@ public class FileController {
         file.transferTo(currentFile);
         HashMap<String, String> path = new HashMap<>();
         path.put("path", envConfig.getUploadFolder() + format + "/" + currentFile.getName());
-        return new Result(200, true, "上传成功", path);
+        return new JsonResult(200, true, "上传成功", path);
     }
 }

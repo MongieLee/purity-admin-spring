@@ -1,13 +1,10 @@
 package com.example.demo.dao;
 
 import com.example.demo.controller.RoleController;
-import com.example.demo.controller.UserController;
 import com.example.demo.model.persistent.RoleDTO;
 import com.example.demo.model.persistent.Role;
 import com.example.demo.model.persistent.RoleMenuRel;
-import com.example.demo.utils.MappingUtils;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,69 +13,39 @@ import java.util.List;
  * 菜单模块数据持久层
  */
 @Repository
-public class RoleDao {
-    private final SqlSession sqlSession;
-    private static final String namespace = "cn.example.demo.Role.";
+public interface RoleDao {
+    int insert(Role data);
 
-    private String getMapperName(String mapperName) {
-        return namespace + mapperName;
-    }
+    int delete(Long id);
 
+    int update(Role data);
 
-    public RoleDao(SqlSession sqlSession) {
-        this.sqlSession = sqlSession;
-    }
+    List<Role> getAll();
 
-    public Role getRoleById(Long id) {
-        return sqlSession.selectOne(getMapperName("getRoleById"), MappingUtils.asMap("id", id));
-    }
+    Role getByName(String name);
 
-    public Role getRoleByName(String name) {
-        return sqlSession.selectOne(getMapperName("getRoleByName"), MappingUtils.asMap("name", name));
-    }
+    Role getById(Long id);
 
-    public void createRole(Role role) {
-        sqlSession.insert(getMapperName("createRole"), role);
-    }
+    List<Role> selectByPage(Role role);
 
-    public List<Role> getAll() {
-        return sqlSession.selectList(getMapperName("getAll"));
-    }
+    List<RoleMenuRel> getRoleMenus(Long roleId);
 
-    public void updateRole(Role role) {
-        sqlSession.update(getMapperName("updateRole"), role);
-    }
+    int clearMenus(Long roleId);
 
-    public void deleteRole(Long id) {
-        sqlSession.delete(getMapperName("deleteRole"), MappingUtils.asMap("id", id));
-    }
+    int saveRoleMenus(RoleController.TempRoleMenu roleMenu);
 
-    public List<Role> getList(Role role) {
-        return sqlSession.selectList(getMapperName("getPage"), role);
-    }
+    List<RoleDTO> getUserRolesByUserId(Long menuId, List<Long> menuIdList);
 
-    public void saveRoleMenus(RoleController.TempRoleMenu roleMenuObj) {
-        sqlSession.update(getMapperName("saveRoleMenus"), roleMenuObj);
-    }
+    void bindRolesByUserId();
 
-    public void clearMenus(Long roleId) {
-        sqlSession.delete(getMapperName("clearMenus"), roleId);
-    }
+    void cleanRolesByUserId();
 
-    public List<RoleMenuRel> getRoleMenus(Long roleId) {
-        return sqlSession.selectList(getMapperName("getRoleMenus"), MappingUtils.asMap("roleId", roleId));
-    }
-
-    public void cleanRolesByUserId(@Param("userId") Long userId) {
-        sqlSession.delete("cleanRolesByUserId", userId);
-    }
-
-    public void bindRolesByUserId(UserController.UserIdRoles userIdRoles) {
-        System.out.println(userIdRoles);
-        sqlSession.insert(getMapperName("bindRolesByUserId"), userIdRoles);
-    }
-
-    public List<RoleDTO> getUserRolesByUserId(List<Long> userIds) {
-        return sqlSession.selectList(getMapperName("getUserRolesByUserId"), MappingUtils.asMap("userIds",userIds));
-    }
+    /**
+     * 批量插入角色菜单关系表
+     *
+     * @param menuId     角色id
+     * @param menuIdList 菜单id列表
+     * @return
+     */
+    int batchInsertRel(@Param("roleId") Long menuId, @Param("menuIdList") List<Long> menuIdList);
 }

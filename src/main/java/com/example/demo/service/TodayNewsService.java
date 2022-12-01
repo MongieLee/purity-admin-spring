@@ -7,7 +7,7 @@ import com.example.demo.dao.TodayNewsDao;
 import com.example.demo.model.persistent.TodayNews;
 import com.example.demo.model.queryUtil.TodayNewsListQuery;
 import com.example.demo.model.service.result.BaseListResult;
-import com.example.demo.model.service.result.Result;
+import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.utils.ContentUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -33,33 +33,33 @@ public class TodayNewsService {
         this.envConfig = envConfig;
     }
 
-    public Result createNews(TodayNews todayNews) {
+    public JsonResult createNews(TodayNews todayNews) {
         todayNewsDao.createNews(todayNews);
-        return Result.success("创建资讯成功", todayNewsDao.getNewsById(todayNews.getId()));
+        return JsonResult.success("创建资讯成功", todayNewsDao.getNewsById(todayNews.getId()));
     }
 
-    public Result getList(TodayNewsListQuery query) {
+    public JsonResult getList(TodayNewsListQuery query) {
         PageHelper.startPage(query.getPage(), query.getPageSize());
         List<TodayNews> list = todayNewsDao.getList(query);
         return BaseListResult.success(list, new PageInfo<>(list).getTotal());
     }
 
-    public Result updateNews(TodayNews todayNews) {
+    public JsonResult updateNews(TodayNews todayNews) {
         Long id = todayNews.getId();
         if (Objects.isNull(todayNewsDao.getNewsById(id))) {
-            return Result.failure("目标资讯不存在");
+            return JsonResult.failure("目标资讯不存在");
         }
         todayNews.setUpdatedBy(ContentUtils.getCurrentAccessUsername());
         todayNewsDao.updateNews(todayNews);
-        return Result.success("更新资讯成功", todayNewsDao.getNewsById(todayNews.getId()));
+        return JsonResult.success("更新资讯成功", todayNewsDao.getNewsById(todayNews.getId()));
     }
 
-    public Result getNewsById(Long id) {
+    public JsonResult getNewsById(Long id) {
         TodayNews dbNews = todayNewsDao.getNewsById(id);
         if (Objects.isNull(dbNews)) {
-            return Result.failure("目标资讯不存在");
+            return JsonResult.failure("目标资讯不存在");
         }
-        return Result.success("获取成功", dbNews);
+        return JsonResult.success("获取成功", dbNews);
     }
 
     /**
@@ -69,7 +69,7 @@ public class TodayNewsService {
      * @return 响应结果
      * @throws FileNotFoundException
      */
-    public Result exportData(TodayNewsListQuery query) throws FileNotFoundException {
+    public JsonResult exportData(TodayNewsListQuery query) throws FileNotFoundException {
         String fileName = System.currentTimeMillis() + ".xlsx";
         File exportFolder = new File(envConfig.getExportFilePath());
         if (!exportFolder.exists()) {
@@ -83,51 +83,51 @@ public class TodayNewsService {
                 });
         Map<String, String> pathResult = new HashMap<>();
         pathResult.put("path", envConfig.getExportFolder() + fileName);
-        return Result.success("导出成功", pathResult);
+        return JsonResult.success("导出成功", pathResult);
     }
 
-    public Result batchInsert(MultipartFile file) throws IOException {
+    public JsonResult batchInsert(MultipartFile file) throws IOException {
         EasyExcel.read(file.getInputStream(), TodayNews.class, new PageReadListener<TodayNews>(dataList -> {
             for (TodayNews todayNews : dataList) {
                 todayNews.setCreatedBy(ContentUtils.getCurrentAccessUsername());
                 todayNewsDao.createNews(todayNews);
             }
         })).sheet().doRead();
-        return Result.success("导入成功");
+        return JsonResult.success("导入成功");
     }
 
-    public Result deleteNews(Long id) {
+    public JsonResult deleteNews(Long id) {
         TodayNews dbNews = todayNewsDao.getNewsById(id);
         if (Objects.isNull(dbNews)) {
-            return Result.failure("目标资讯不存在");
+            return JsonResult.failure("目标资讯不存在");
         }
         todayNewsDao.deleteNews(id);
-        return Result.success("删除资讯成功");
+        return JsonResult.success("删除资讯成功");
     }
 
-    public Result cancelPublish(Long id) {
+    public JsonResult cancelPublish(Long id) {
         TodayNews dbNews = todayNewsDao.getNewsById(id);
         if (Objects.isNull(dbNews)) {
-            return Result.failure("目标资讯不存在");
+            return JsonResult.failure("目标资讯不存在");
         }
         if (!dbNews.getIsPublish()) {
-            return Result.failure("资讯已是未发布状态，请勿重复操作");
+            return JsonResult.failure("资讯已是未发布状态，请勿重复操作");
         }
         todayNewsDao.cancelPublishNews(id);
-        return Result.success("取消发布成功");
+        return JsonResult.success("取消发布成功");
     }
 
-    public Result publish(Long id) {
+    public JsonResult publish(Long id) {
         TodayNews dbNews = todayNewsDao.getNewsById(id);
         if (Objects.isNull(dbNews)) {
-            return Result.failure("目标资讯不存在");
+            return JsonResult.failure("目标资讯不存在");
         }
         checkDbTargetExistById(id);
         if (dbNews.getIsPublish()) {
-            return Result.failure("资讯已是发布状态，请勿重复操作");
+            return JsonResult.failure("资讯已是发布状态，请勿重复操作");
         }
         todayNewsDao.publishNews(id, ContentUtils.getCurrentAccessUsername());
-        return Result.success("发布成功");
+        return JsonResult.success("发布成功");
     }
 
     public Boolean checkDbTargetExistById(Long id) {
