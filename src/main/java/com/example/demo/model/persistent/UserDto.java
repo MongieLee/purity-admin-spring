@@ -26,7 +26,11 @@ public class UserDto {
     private Date createdAt;
     private Date updatedAt;
     private String avatar;
-//    private UserTypeEnum userType;
+    //    private UserTypeEnum userType;
     private String roleNames;
     private List<Long> roleIds;
+    private Long deptId;
+    private String deptName;
+    private Long roleId;
+    private String roleName;
 }

@@ -1,5 +1,6 @@
 package com.example.demo.model.persistent;
 
+import com.example.demo.valid.UserModelValid;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,6 +23,7 @@ import java.util.Date;
 @ApiModel(description = "用户实体类")
 public class User {
     @ApiModelProperty(value = "唯一主键Id")
+    @NotNull(message = "用户id不能为空")
     private Long id;
 
     @NotBlank(message = "账号不能为空")
@@ -33,10 +35,10 @@ public class User {
     private String nickname;
 
     @JsonIgnore
-    @NotNull(message = "密码不能为空")
     @ApiModelProperty(required = true, example = "123456", value = "密码")
     private String encryptedPassword;
 
+    @NotNull(message = "用户状态不能为空")
     @ApiModelProperty(example = "true", value = "账号状态,true为正常，false为封号")
     private Boolean status;
 
@@ -46,6 +48,9 @@ public class User {
     @ApiModelProperty(example = "2022-01-01 12:00:00", value = "更新时间")
     private Date updatedAt;
 
+    @NotNull(message = "所属部门不能为空")
+    @ApiModelProperty(example = "1", value = "部门id")
+    private Long deptId;
 //    private UserTypeEnum userType;
 
     @ApiModelProperty(value = "头像图片地址")

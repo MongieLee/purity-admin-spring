@@ -1,3 +1,4 @@
+drop table if exists user;
 create table user
 (
     id                 int primary key auto_increment,
@@ -6,12 +7,15 @@ create table user
     nickname           varchar(20),
     avatar             varchar(100),
     status             bit,
+    dept_id            int,
     created_at         datetime,
     updated_at         datetime,
     UNIQUE (username)
 ) ENGINE = InnoDB
-DEFAULT CHARSET = utf8mb4
-COLLATE = utf8mb4_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 
-insert into user(id, username, encrypted_password, status, created_at, updated_at)
-values ('1', '123', '$2a$10$yyXdZpW5iJX2MJx2Rmx4zufln1Dd9M8QZ..sqLcvC4d4.qa9hHAV6', 1, now(), now())
+# 默认账号密码superadmin 123qwe
+insert into user(id, dept_id, username, nickname, encrypted_password, status, created_at, updated_at)
+values (1, 1, 'superadmin', '超级管理员', '$2a$10$SFCrQlssKpxsJ5hEidE82.ke88vQO9qQ2ha4ztZFULKnup3guZ5.a', 1, now(),
+        now());

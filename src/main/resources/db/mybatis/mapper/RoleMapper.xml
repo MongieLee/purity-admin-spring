@@ -49,7 +49,7 @@
         where id = #{id}
     </update>
     <select id="getAll" resultType="Role">
-        select *
+        select id, state, name, code, description, created_at, updated_at
         from role;
     </select>
     <delete id="delete">

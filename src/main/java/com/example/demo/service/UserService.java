@@ -6,6 +6,7 @@ import com.example.demo.exception.ServiceBusinessException;
 import com.example.demo.model.persistent.RoleDTO;
 import com.example.demo.model.persistent.Role;
 import com.example.demo.model.persistent.User;
+import com.example.demo.model.persistent.UserDto;
 import com.example.demo.model.service.Account;
 import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.utils.JWTUtils;
@@ -46,8 +47,8 @@ public class UserService {
      * @return 用户信息
      */
     public User updateUser(User user) {
-        userDao.updateUser(user);
-        return userDao.findUserById(user.getId());
+        userDao.update(user);
+        return userDao.getUserById(user.getId());
     }
 
     /**
@@ -57,7 +58,7 @@ public class UserService {
      * @return 用户信息
      */
     public User getUserByName(String username) {
-        return userDao.findUserByUsername(username);
+        return userDao.getUserByUsername(username);
     }
 
     /**
@@ -67,7 +68,7 @@ public class UserService {
      * @return 用户信息
      */
     public User getUserById(Long id) {
-        return userDao.findUserById(id);
+        return userDao.getUserById(id);
     }
 
     /**
@@ -138,16 +139,13 @@ public class UserService {
      * @return 注册结果
      */
     public JsonResult register(Account account) {
-        try {
-            userDao.register(new User().setUsername(account.getUsername())
-                            .setNickname(getRandomChineseCharacters(4))
-                            .setEncryptedPassword(bCryptPasswordEncoder.encode(account.getPassword()))
+        userDao.register(new User().setUsername(account.getUsername())
+                        .setStatus(account.getStatus() != null ? account.getStatus() : true)
+                        .setNickname(getRandomChineseCharacters(4))
+                        .setEncryptedPassword(bCryptPasswordEncoder.encode(account.getPassword()))
 //                    .setUserType(UserTypeEnum.DEFAULT_USER)
-            );
-            return JsonResult.success("注册成功!");
-        } catch (DuplicateKeyException e) {
-            return JsonResult.failure("用户已注册");
-        }
+        );
+        return JsonResult.success("注册成功!");
     }
 
     /**
@@ -158,7 +156,7 @@ public class UserService {
      * @param pageSize 每页多少条
      * @return 用户列表结果
      */
-    public List<User> getList(User user, Integer page, Integer pageSize) {
+    public List<UserDto> getList(User user, Integer page, Integer pageSize) {
         PageHelper.startPage(page, pageSize);
         return userDao.getList(user);
     }
@@ -170,7 +168,7 @@ public class UserService {
      * @return JSON响应实体
      */
     public JsonResult deleteUser(Long id) {
-        User userById = userDao.findUserById(id);
+        User userById = userDao.getUserById(id);
         if (userById == null) {
             return JsonResult.failure("用户不存在");
         }
@@ -186,7 +184,7 @@ public class UserService {
      * @return JSON响应实体
      */
     public JsonResult changeStatus(byte status, Long userId) {
-        User userById = userDao.findUserById(userId);
+        User userById = userDao.getUserById(userId);
         if (userById == null) {
             return JsonResult.failure("用户不存在");
         }
@@ -195,13 +193,14 @@ public class UserService {
     }
 
     public List<Role> getUserRoles(Long userId) {
-        List<Long> roleIds = userDao.findRolesByUserId(userId);
-        List<Role> roles = new ArrayList<>();
-        roleIds.forEach(roleId -> {
-            Role roleById = roleDao.getById(roleId);
-            roles.add(roleById);
-        });
-        return roles;
+//        List<Long> roleIds = userDao.findRolesByUserId(userId);
+//        List<Role> roles = new ArrayList<>();
+//        roleIds.forEach(roleId -> {
+//            Role roleById = roleDao.getById(roleId);
+//            roles.add(roleById);
+//        });
+//        return roles;
+        return null;
     }
 
     public List<RoleDTO> getUserRolesByUserId(List<Long> userIds) {
@@ -216,5 +215,26 @@ public class UserService {
 
     public JsonResult refreshToken(String s) {
         return JsonResult.success("刷新成功", null);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void createUser(User user,ArrayList<Long> roleIds) {
+        User userByUsername = userDao.getUserByUsername(user.getUsername());
+        if (userByUsername != null) {
+            throw new ServiceBusinessException("创建用户失败，用户已存在");
+        }
+        userDao.register(user);
+        userDao.bindRole(user.getId(),roleIds);
+    }
+
+    public void bindRole(Long userId, ArrayList<Long> roleIds) {
+        userDao.bindRole(userId, roleIds);
+    }
+
+    public void updateRole(Long userId, ArrayList<Long> roleIds) {
+        userDao.updateRole(userId, roleIds);
+    }
+    public void cleanRole(Long userId) {
+        userDao.cleanRole(userId);
     }
 }

@@ -1,63 +1,101 @@
 package com.example.demo.dao;
 
 import com.example.demo.model.persistent.User;
-import com.example.demo.model.service.Account;
-import com.example.demo.utils.MappingUtils;
+import com.example.demo.model.persistent.UserDto;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 用户模块数据持久层
  */
 @Repository
-public class UserDao {
-    private final SqlSession sqlSession;
-    private static final String namespace = "cn.example.demo.User.";
+public interface UserDao {
 
-    private String getMapperName(String mapperName) {
-        return namespace + mapperName;
-    }
+    /**
+     * 创建用户
+     *
+     * @param user
+     * @return
+     */
+    int register(User user);
+
+    /**
+     * 根据id查询用户
+     *
+     * @param userId
+     */
+    User getUserById(Long userId);
+
+    /**
+     * 根据用户名查询id
+     *
+     * @param username
+     */
+    User getUserByUsername(String username);
+
+    int update(User user);
+
+    int updatePassword(User user);
+
+    /**
+     * 获取用户列表
+     *
+     * @param user
+     * @return
+     */
+    List<UserDto> getList(User user);
+
+    /**
+     * 根据部门id获取用户列表
+     *
+     * @param depId 部门id
+     * @return
+     */
+    List<User> getUsersOfDep(Long depId);
+
+    /**
+     * @param id
+     * @return
+     */
+    int deleteUser(Long id);
+
+    /**
+     * 更改用户状态
+     *
+     * @param status 目标状态
+     * @param userId 用户id
+     * @return {int}
+     */
+    int changeStatus(byte status, Long userId);
+
+    /**
+     * 根据用户id获取用户相关权限
+     *
+     * @param userId
+     * @return void
+     */
+    void findRolesByUserId(Long userId);
+
+    /**
+     * 用户绑定角色
+     *
+     * @param userId
+     * @param roleIds
+     * @return
+     */
+    int bindRole(Long userId, ArrayList<Long> roleIds);
 
 
-    public UserDao(SqlSession sqlSession) {
-        this.sqlSession = sqlSession;
-    }
+    /**
+     * 更新角色
+     * @param userId
+     * @param roleId
+     * @return
+     */
+    int updateRole(Long userId, ArrayList<Long> roleId);
 
-    public void register(User user) {
-        sqlSession.insert("register", user);
-    }
-
-    public User findUserById(Long userId) {
-        return sqlSession.selectOne("getUserById", MappingUtils.asMap("userId", userId));
-    }
-
-    public User findUserByUsername(String username) {
-        return sqlSession.selectOne("getUserByUsername", MappingUtils.asMap("username", username));
-    }
-
-    public void updateUser(User user) {
-        sqlSession.update("updateUser", user);
-    }
-    public void updatePassword(User user) {
-        sqlSession.update("updatePassword", user);
-    }
-
-    public List<User> getList(User user) {
-        return sqlSession.selectList(getMapperName("getPage"), user);
-    }
-
-    public void deleteUser(Long id) {
-        sqlSession.delete("deleteUser", MappingUtils.asMap("id", id));
-    }
-
-    public void changeStatus(byte status, Long userId) {
-        sqlSession.update("changeStatus", MappingUtils.asMap("status", status, "userId", userId));
-    }
-
-    public List<Long> findRolesByUserId(@Param("userId") Long userId) {
-        return sqlSession.selectList(getMapperName("findRolesByUserId"), userId);
-    }
+    int cleanRole(Long userId);
 }

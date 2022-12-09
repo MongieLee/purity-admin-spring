@@ -1,41 +1,66 @@
 package com.example.demo.controller;
 
 import com.example.demo.converter.p2s.UserP2SConverter;
-import com.example.demo.model.persistent.RoleDTO;
-import com.example.demo.model.persistent.Role;
 import com.example.demo.model.persistent.User;
 import com.example.demo.model.persistent.UserDto;
+import com.example.demo.model.service.Account;
 import com.example.demo.model.service.result.BaseListResult;
 import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.service.UserService;
+import com.example.demo.valid.AccountModelValid;
 import com.github.pagehelper.PageInfo;
-import lombok.*;
-import org.springframework.beans.BeanUtils;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 /**
  * 用户模块
  */
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
     private final UserP2SConverter userP2SConverter;
+    private final BCryptPasswordEncoder encoder;
 
-    public UserController(UserService userService, UserP2SConverter userP2SConverter) {
+    public UserController(UserService userService, UserP2SConverter userP2SConverter, BCryptPasswordEncoder encoder) {
         this.userService = userService;
         this.userP2SConverter = userP2SConverter;
+        this.encoder = encoder;
+    }
+
+    @PostMapping
+    public JsonResult createUser(@Validated(AccountModelValid.Create.class) @RequestBody Account account) {
+        User user = new User()
+                .setDeptId(account.getDeptId())
+                .setUsername(account.getUsername())
+                .setNickname(account.getNickname())
+                .setEncryptedPassword(encoder.encode(account.getPassword()))
+                .setStatus(account.getStatus());
+        userService.createUser(user,account.getRoleIds());
+        return JsonResult.success("创建用户成功");
+    }
+
+
+    @PutMapping
+    public JsonResult updateUser(@Validated @RequestBody User user) {
+        User dbUser = userService.getUserById(user.getId());
+        if (dbUser == null) {
+            return JsonResult.failure("用户不存在");
+        }
+        userService.cleanRole(user.getId());
+        dbUser.setUsername(user.getUsername()).setNickname(user.getNickname()).setStatus(user.getStatus()).setDeptId(user.getDeptId());
+        userService.bindRole(user.getId(), null);
+        return JsonResult.success("更新用户信息成功", userService.updateUser(dbUser));
     }
 
     @GetMapping("/info")
@@ -58,7 +83,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) authentication.getPrincipal();
         User userByName = userService.getUserByName(username);
-        if (bCryptPasswordEncoder.matches(oldPassword,userByName.getEncryptedPassword())) {
+        if (bCryptPasswordEncoder.matches(oldPassword, userByName.getEncryptedPassword())) {
             System.out.println("旧密码相同，可以修改");
             userByName.setEncryptedPassword(bCryptPasswordEncoder.encode(newPassword));
             userService.updatePassword(userByName);
@@ -69,55 +94,19 @@ public class UserController {
         }
     }
 
-    ;
 
-    @PutMapping("/{id}")
-    public JsonResult updateUser(@PathVariable("id") Long id, @RequestBody User user) {
-        try {
-            User dbUser = userService.getUserById(id);
-            if (dbUser == null) {
-                return JsonResult.failure("用户不存在");
-            }
-            dbUser.setAvatar(user.getAvatar());
-            return JsonResult.success("更新用户信息成功", userService.updateUser(dbUser));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return JsonResult.failure(e.getMessage());
-        }
-    }
-
-    @GetMapping("/list")
+    @GetMapping
     public JsonResult getList(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,
-                              @RequestParam(name = "username", required = false) String username) {
+                              @RequestParam(name = "username", required = false) String username,
+                              @RequestParam(required = false) Boolean status,
+                              @RequestParam(name = "deptId", required = false) Long deptId) {
         if (page < 1) {
             page = 1;
         }
-        User user = new User().setUsername(username);
-        List<User> list = userService.getList(user, page, pageSize);
-        PageInfo<User> userPageInfo = new PageInfo<>(list);
-        List<UserDto> result = new ArrayList<>();
-
-        List<Long> userIdList = list.stream().map(User::getId).collect(Collectors.toList());
-        List<RoleDTO> roleList = userService.getUserRolesByUserId(userIdList);
-        list.forEach(currentUser -> {
-//            List<Role> userRoles = userService.getUserRoles(currentUser.getId());
-            List<Role> userRoles = roleList.stream().filter(item -> item.getUserId().equals(currentUser.getId()))
-                    .map(item -> {
-                        Role roleResult = new Role();
-                        BeanUtils.copyProperties(item, roleResult);
-                        return roleResult;
-                    }).collect(Collectors.toList());
-            AtomicReference<String> roleNames = new AtomicReference<>();
-            List<Long> roleIds = userRoles.stream().map(value -> {
-                String name = value.getName();
-                roleNames.set(Objects.isNull(roleNames.get()) ? name : roleNames.get() + "，" + name);
-                return value.getId();
-            }).collect(Collectors.toList());
-            UserDto userDto = userP2SConverter.convert(currentUser);
-            userDto.setRoleIds(roleIds).setRoleNames(roleNames.get());
-            result.add(userDto);
-        });
-        return BaseListResult.success(result, userPageInfo.getTotal());
+        User user = new User().setUsername(username).setDeptId(deptId).setStatus(status);
+        List<UserDto> list = userService.getList(user, page, pageSize);
+        PageInfo<UserDto> userPageInfo = new PageInfo<>(list);
+        return BaseListResult.success(list, userPageInfo.getTotal());
     }
 
     @DeleteMapping("/{id}")

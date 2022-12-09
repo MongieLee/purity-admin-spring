@@ -48,7 +48,7 @@ public class GlobalException {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public JsonResult missingRequestBodyExceptionHandler(HttpMessageNotReadableException e) {
         log.error(e.getMessage());
-        return JsonResult.failure("参数解析失败，请检查接口传参是否正确", e.getMessage());
+        return JsonResult.failure("请求体参数解析失败，请检查接口传参是否正确", e.getMessage());
     }
 
     /**

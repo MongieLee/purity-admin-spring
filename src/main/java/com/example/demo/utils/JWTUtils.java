@@ -27,7 +27,8 @@ public class JWTUtils {
      */
     public static HashMap<String, Object> generateToken(Map<String, String> map) {
         Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.DATE, 7); // 7天过期
+        // 7天过期
+        instance.add(Calendar.DATE, 7);
         JWTCreator.Builder builder = JWT.create();
         map.forEach(builder::withClaim);
         HashMap<String, Object> objectObjectHashMap = new HashMap<>();

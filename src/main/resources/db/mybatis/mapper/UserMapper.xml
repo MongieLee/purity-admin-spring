@@ -1,56 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.example.demo.User">
-    <resultMap id="userMap" type="com.example.demo.model.persistent.User">
-        <id column="id" property="id"></id>
-        <!--        <result column="user_type" property="userType"-->
-        <!--                typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"></result>-->
-        <!--        <result column="user_type" property="userType"-->
-        <!--                typeHandler="com.example.demo.model.UserEnumTypeHandler"></result>-->
+<mapper namespace="com.example.demo.dao.UserDao">
+    <resultMap id="userOfDept" type="userDto">
+        <!--        <id property="id" column="id"></id>-->
+        <!--        <result property="username" column="username"></result>-->
+        <!--        <result property="nickname" column="nickname"></result>-->
+        <!--        <result property="deptId" column="dept_id"></result>-->
+        <!--        <result property="deptName" column="dept_name"></result>-->
+        <!--        <result property="createdAt" column="created_at"></result>-->
+        <!--        <result property="updatedAt" column="updated_at"></result>-->
+        <!--        <result property="status" column="status"></result>-->
+        <!--        <result property="avatar" column="avatar"></result>-->
     </resultMap>
-    <select id="login" parameterType="User">
-        select *
-        from user
-        where id = #{username}
-          and encryptedPassword = #{encryptedPassword}
-    </select>
-    <!--    <insert id="register">-->
-    <!--        insert into user-->
-    <!--        (username, encrypted_password, nickname, avatar, status, user_type, created_at, updated_at)-->
-    <!--        values (#{username}, #{encryptedPassword}, #{nickname}, #{avatar}, 1,-->
-    <!--                #{userType,typeHandler=com.example.demo.model.UserEnumTypeHandler}, now(), now())-->
-    <!--    </insert>-->
-    <insert id="register">
+    <insert id="register" useGeneratedKeys="true" keyProperty="id">
         insert into user
-        (username, encrypted_password, nickname, avatar, status, created_at, updated_at)
-        values (#{username}, #{encryptedPassword}, #{nickname}, #{avatar}, 1, now(), now())
+        (username, encrypted_password, nickname, avatar, status, dept_id, created_at, updated_at)
+        values (#{username}, #{encryptedPassword}, #{nickname}, #{avatar}, #{status}, #{deptId}, now(), now())
     </insert>
-    <select id="getUserById" resultType="User">
+
+    <select id="getUserById" resultType="user">
         select *
         from user
         where id = #{userId}
     </select>
-    <select id="getUserByUsername" resultMap="userMap">
-        select *
-        from user
+    <select id="getUserByUsername" resultType="user">
+        <include refid="base_select"/>
         where username = #{username}
     </select>
-    <select id="getPage" resultMap="userMap">
-        select *
-        from user
-        <if test="username != null">
-            where username like concat('%',#{username},'%')
-        </if>
+    <select id="getList" resultType="userDto">
+
+        select
+        a.id,a.username,a.encrypted_password,a.dept_id,a.nickname,a.avatar,a.`status`,a.created_at,b.updated_at,c.`name`
+        role_name,c.id role_id,d.name dept_name from user a left join user_role_rel b on a.id = b.user_id LEFT JOIN role
+        c on b.role_id = c.id left join t_department d on d.id = a.dept_id
+        <where>
+            <if test="username != null and username !=''">username like concat('%',#{username},'%')</if>
+            <if test="deptId != null">and dept_id = #{deptId}</if>
+            <if test="status != null">and status = #{status}</if>
+        </where>
     </select>
-    <update id="updateUser" parameterType="User">
-        UPDATE user
-        SET avatar     = #{avatar},
-            updated_at = now(),
-            nickname   = #{nickname}
+    <update id="update">
+        UPDATE user set
+        <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+        <if test="deptId != null">dept_id = #{deptId},</if>
+        <if test="status != null">status = #{status},</if>
+        <if test="username != null and username != ''">username = #{username},</if>
+        <if test="nickname != null and nickname != ''">nickname = #{nickname},</if>
+        updated_at = now()
         where id = #{id}
     </update>
-    <update id="updatePassword" parameterType="user">
+
+
+    <update id="updatePassword">
         UPDATE user
         set encrypted_password = #{encryptedPassword}
         where id = #{id}
@@ -60,14 +62,54 @@
         from user
         where id = #{id}
     </delete>
+    <delete id="cleanRole">
+        delete
+        from user_role_re
+        where user_id = #{userId}
+    </delete>
     <update id="changeStatus">
         update user
         set status = #{status}
         where id = #{userId};
     </update>
+
     <select id="findRolesByUserId">
         select role_id
         from user_role_rel
         where user_id = #{userId};
     </select>
+    <select id="getUsersOfDep" resultType="user">
+        <include refid="base_select"/>
+        where dept_id = #{dept_id}
+    </select>
+    <sql id="base_select">
+        select id,
+               username,
+               encrypted_password,
+               dept_id,
+               nickname,
+               avatar,
+               status,
+               created_at,
+               updated_at
+        from `user`
+    </sql>
+
+    <update id="updateRole">
+        update user_role_rel
+        set role_id    = #{roleId},
+            updated_at = now()
+        where user_id = #{userId}
+    </update>
+    <insert id="bindRole">
+        insert into user_role_rel(
+        <if test="userId != null">user_id,</if>
+        <if test="roleIds != null">role_id,</if>
+        created_at,updated_at)
+        values
+        <foreach collection="roleIds" item="roleId" separator="," open="(" close=")">
+            #{userId},#{roleId},now(),now()
+        </foreach>
+    </insert>
+
 </mapper>

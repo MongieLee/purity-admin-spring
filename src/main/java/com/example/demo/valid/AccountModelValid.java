@@ -7,6 +7,10 @@ public interface AccountModelValid extends Default {
 
     }
 
+    interface Create extends AccountModelValid {
+
+    }
+
     interface Login extends AccountModelValid {
 
     }

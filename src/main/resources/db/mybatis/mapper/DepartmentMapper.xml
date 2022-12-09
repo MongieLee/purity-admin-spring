@@ -56,6 +56,6 @@
     <delete id="delete">
         delete
         from t_department
-        where id = #{depId}
+        where id = #{deptId}
     </delete>
 </mapper>
