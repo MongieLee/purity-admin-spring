@@ -31,6 +31,8 @@ public class MenuDto {
     private Boolean visible;
     private Boolean state;
     private String remark;
+    private String compPath;
+
     private String permission;
     private List<MenuDto> children;
     @DateTimeFormat("yyyy-MM-dd HH:mm:ss")

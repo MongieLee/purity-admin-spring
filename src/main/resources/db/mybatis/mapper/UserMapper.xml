@@ -40,6 +40,7 @@
             <if test="status != null">and status = #{status}</if>
         </where>
     </select>
+
     <update id="update">
         UPDATE user set
         <if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
@@ -50,6 +51,17 @@
         updated_at = now()
         where id = #{id}
     </update>
+    <select id="testSetLabel" parameterType="user">
+        select * from t_user
+        <set>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="username != null">
+                gender = #{gender},
+            </if>
+        </set>
+    </select>
 
 
     <update id="updatePassword">

@@ -91,7 +91,12 @@ public class UserService {
         }
 
         // 往redis中存refreshToken
-        return JsonResult.success("登录成功", cacheInRedis(dbUser));
+//        return JsonResult.success("登录成功", cacheInRedis(dbUser));
+        Map<String, String> map = new HashMap<>();
+        map.put("username", dbUser.getUsername());
+        map.put("userId", dbUser.getId().toString());
+        HashMap<String, Object> stringObjectHashMap = JWTUtils.generateToken(map);
+        return JsonResult.success("登录成功", stringObjectHashMap);
     }
 
     /**

@@ -36,8 +36,8 @@
     </insert>
     <update id="insert" parameterType="Role" useGeneratedKeys="true" keyProperty="id">
         insert into role
-            (name, code, description, created_at, updated_at)
-        values (#{name}, #{code}, #{description}, now(), now())
+            (name, code, state, description, created_at, updated_at)
+        values (#{name}, #{code}, #{state}, #{description}, now(), now())
     </update>
     <update id="update" parameterType="Role">
         UPDATE role

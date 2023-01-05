@@ -5,6 +5,7 @@ import com.example.demo.model.persistent.Menu;
 import com.example.demo.model.service.MenuDto;
 import com.example.demo.model.service.result.JsonResult;
 import com.example.demo.service.MenuService;
+import com.example.demo.service.UserService;
 import lombok.val;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,10 +21,12 @@ import java.util.Collection;
 @RequestMapping("/api/v1/menu")
 public class MenuController {
     private final MenuService menuService;
+    private final UserService userService;
     private final MenuP2SConverter menuP2SConverter;
 
-    public MenuController(MenuService menuService, MenuP2SConverter menuP2SConverter) {
+    public MenuController(MenuService menuService, UserService userService, MenuP2SConverter menuP2SConverter) {
         this.menuService = menuService;
+        this.userService = userService;
         this.menuP2SConverter = menuP2SConverter;
     }
 
@@ -144,5 +147,12 @@ public class MenuController {
         Object credentials = authentication.getCredentials();
         Object details = authentication.getDetails();
         return JsonResult.success("获取用户菜单成功", menuService.getUserMenus(userId));
+    }
+
+    @GetMapping("/getUserMenus")
+    public JsonResult getSelf() {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long id = userService.getUserByName(name).getId();
+        return  getUserMenus(id);
     }
 }

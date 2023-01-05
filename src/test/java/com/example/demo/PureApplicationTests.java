@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Calendar;
 import java.util.HashMap;
 
-class DemoApplicationTests {
+class PureApplicationTests {
 
     @Test
     void contextLoads() {

@@ -118,8 +118,9 @@ public class MenuService {
     }
 
     private List<MenuDto> convertTree(List<MenuDto> menuList) {
+        List<MenuDto> collect = getAllMenu().stream().map(menuP2SConverter::convert).collect(Collectors.toList());
         List<MenuDto> treeResult = new ArrayList<>();
-        for (MenuDto menu : menuList) {
+        for (MenuDto menu : collect) {
             for (MenuDto m : menuList) {
                 if (Objects.equals(menu.getId(), m.getParentId())) {
                     m.setParentName(menu.getName());
@@ -129,7 +130,10 @@ public class MenuService {
             if (menu.getChildren().size() != 0) {
                 menu.getChildren().sort(Comparator.comparingInt(MenuDto::getSequence));
             }
-            if (menu.getParentId() == null) {
+            if (menu.getParentId() == null &&
+                    (menuList.stream().anyMatch(i -> i.getId().equals(menu.getId())) ||
+                            menuList.stream().anyMatch(i -> i.getParentId().equals(menu.getId())))
+            ) {
                 treeResult.add(menu);
             }
         }
