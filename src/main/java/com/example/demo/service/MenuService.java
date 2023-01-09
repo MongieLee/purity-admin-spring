@@ -48,7 +48,7 @@ public class MenuService {
             }
             menu.setSequence(sequence);
         }
-        menuDao.updateMenu(menu.setId(id));
+        menuDao.update(menu.setId(id));
         return getMenuById(menu.getId());
     }
 
@@ -60,11 +60,11 @@ public class MenuService {
         if (menuById.getChildren().size() > 0) {
             throw new RuntimeException("删除失败，请先删除【" + menuById.getName() + "】菜单下的子级菜单");
         }
-        menuDao.deleteMenu(id);
+        menuDao.delete(id);
     }
 
     public MenuDto findById(Long id) {
-        return menuP2SConverter.convert(menuDao.getMenuById(id));
+        return menuP2SConverter.convert(menuDao.getById(id));
     }
 
     public MenuDto createMenu(Menu menu) {
@@ -78,7 +78,7 @@ public class MenuService {
             }
         }
         menu.setSequence(sequence);
-        menuDao.createMenu(menu);
+        menuDao.insert(menu);
         return findById(menu.getId());
     }
 
@@ -106,7 +106,7 @@ public class MenuService {
     }
 
     public MenuDto getMenuByName(String name) {
-        return menuP2SConverter.convert(menuDao.getMenuByName(name));
+        return menuP2SConverter.convert(menuDao.getByName(name));
     }
 
     public List<MenuDto> tree() {
@@ -117,13 +117,19 @@ public class MenuService {
         return convertTree(collect);
     }
 
+    /**
+     * 将db中的无序菜单列表转换成菜单树结构
+     * @param menuList
+     * @return
+     */
     private List<MenuDto> convertTree(List<MenuDto> menuList) {
         List<MenuDto> collect = getAllMenu().stream().map(menuP2SConverter::convert).collect(Collectors.toList());
         List<MenuDto> treeResult = new ArrayList<>();
         for (MenuDto menu : collect) {
-            for (MenuDto m : menuList) {
+            for (MenuDto m : collect) {
                 if (Objects.equals(menu.getId(), m.getParentId())) {
                     m.setParentName(menu.getName());
+                    m.setParentId(menu.getId());
                     menu.getChildren().add(m);
                 }
             }
@@ -155,21 +161,21 @@ public class MenuService {
         Menu replace = null;
         for (int i = 0; i < sibling.size(); i++) {
             Menu record = sibling.get(i);
-            if (record.getId() == menu.getId()) {
+            if (Objects.equals(record.getId(), menu.getId())) {
                 target = menu.getSequence();
                 replace = sibling.get(i - 1);
             }
         }
         menu.setSequence(Objects.requireNonNull(replace).getSequence());
         replace.setSequence(target);
-        menuDao.updateMenu(replace);
-        menuDao.updateMenu(menu);
+        menuDao.update(replace);
+        menuDao.update(menu);
     }
 
     public void moveDown(Menu menu) {
         List<Menu> sibling = menuDao.getSibling(menu);
         sibling.sort((o1, o2) -> o2.getSequence() - o1.getSequence());
-        if (sibling.get(0).getId() == menu.getId()) {
+        if (Objects.equals(sibling.get(0).getId(), menu.getId())) {
             throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是最后一位");
         }
         Integer target = null;
@@ -183,18 +189,18 @@ public class MenuService {
         }
         menu.setSequence(Objects.requireNonNull(replace).getSequence());
         replace.setSequence(target);
-        menuDao.updateMenu(replace);
-        menuDao.updateMenu(menu);
+        menuDao.update(replace);
+        menuDao.update(menu);
     }
 
     public void moveToStar(Menu menu) {
         List<Menu> sibling = menuDao.getSibling(menu);
         sibling.sort(Comparator.comparingInt(Menu::getSequence));
         Menu first = sibling.get(0);
-        if (first.getId() == menu.getId()) {
+        if (Objects.equals(first.getId(), menu.getId())) {
             throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是第一位");
         }
-        menuDao.updateMenu(menu.setSequence(first.getSequence() - 1));
+        menuDao.update(menu.setSequence(first.getSequence() - 1));
 
     }
 
@@ -203,14 +209,10 @@ public class MenuService {
         sibling.sort(Comparator.comparingInt(Menu::getSequence));
         Collections.reverse(sibling);
         Menu first = sibling.get(0);
-        if (first.getId() == menu.getId()) {
+        if (Objects.equals(first.getId(), menu.getId())) {
             throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是最后一位");
         }
-        menuDao.updateMenu(menu.setSequence(first.getSequence() + 1));
-    }
-
-    public void test() {
-        menuDao.test();
+        menuDao.update(menu.setSequence(first.getSequence() + 1));
     }
 
     public List<MenuDto> getUserMenus(Long userId) {

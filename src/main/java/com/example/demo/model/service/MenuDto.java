@@ -26,12 +26,12 @@ public class MenuDto {
     private String icon;
     private String parentName;
     private Character menuType;
+    private String compName;
     private Boolean isLink;
     private Integer sequence;
     private Boolean visible;
     private Boolean state;
     private String remark;
-    private String compPath;
 
     private String permission;
     private List<MenuDto> children;

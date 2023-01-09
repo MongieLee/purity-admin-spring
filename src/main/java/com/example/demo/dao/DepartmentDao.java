@@ -11,7 +11,6 @@ import java.util.List;
  * @version 1.0
  * @date 2022/12/1 13:25
  */
-@Repository
 public interface DepartmentDao {
     int insert(Department dep);
 

@@ -3,13 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    <settings>
-        <setting name="mapUnderscoreToCamelCase" value="true"/>
-        <setting name="logImpl" value="LOG4J"/>
-    </settings>
-    <typeAliases>
-        <package name="com.example.demo.model"/>
-    </typeAliases>
+<!--    <settings>-->
+<!--        <setting name="mapUnderscoreToCamelCase" value="true"/>-->
+<!--        <setting name="logImpl" value="LOG4J"/>-->
+<!--    </settings>-->
+<!--    <typeAliases>-->
+<!--        <package name="com.example.demo.model"/>-->
+<!--    </typeAliases>-->
     <!--    <plugins>-->
     <!--        &lt;!&ndash; com.github.pagehelper为PageHelper类所在包名 &ndash;&gt;-->
     <!--        <plugin interceptor="com.github.pagehelper.PageInterceptor">-->

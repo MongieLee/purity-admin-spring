@@ -27,7 +27,7 @@ public class Menu {
     private Integer sequence;
     private Boolean visible;
     private String remark;
-    private String compPath;
+    private String compName;
     private String permission;
     private String createBy;
     private Boolean state;

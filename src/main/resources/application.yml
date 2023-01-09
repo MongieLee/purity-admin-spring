@@ -12,3 +12,9 @@ spring:
   #    add-mappings: false
   profiles:
     active: dev
+mybatis:
+  type-aliases-package: com.example.demo.model
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+  mapper-locations: classpath:db/mybatis/mapper/*.xml

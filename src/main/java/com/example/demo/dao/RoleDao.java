@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * 菜单模块数据持久层
  */
-@Repository
 public interface RoleDao {
     int insert(Role data);
 

@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.example.demo.Menu">
-    <insert id="createMenu" parameterType="Menu">
+<mapper namespace="com.example.demo.dao.MenuDao">
+    <insert id="insert">
         insert into menu
-        (name, path, parent_id, menu_type, visible, `icon`, sequence, remark, permission, created_by, created_at,
+        (name, path, comp_name, parent_id, menu_type, visible, `icon`, sequence, remark, permission, created_by,
+         created_at,
          updated_at, is_link, state)
-        values (#{name}, #{path}, #{parentId}, #{menuType}, #{visible}, #{icon}, #{sequence}, #{remark}, #{permission},
+        values (#{name}, #{path}, #{compName}, #{parentId}, #{menuType}, #{visible}, #{icon}, #{sequence}, #{remark},
+                #{permission},
                 #{createBy}, now(), now(), #{isLink}, #{state})
     </insert>
-    <update id="updateMenu" parameterType="Menu">
+    <update id="update">
         update menu
         set `name`=#{name},
             `path`=#{path},
@@ -24,14 +26,14 @@
             `updated_at` = now(),
             `is_link`=#{isLink},
             `state`=#{state},
-        where id = #{id}
+            where id = #{id}
     </update>
-    <select id="getMenuById" resultType="menu">
+    <select id="getById" resultType="menu">
         select *
         from menu
         where id = #{id}
     </select>
-    <select id="getMenuByName" resultType="Menu">
+    <select id="getByName" resultType="Menu">
         select *
         from menu
         where name = #{name}
@@ -40,7 +42,7 @@
         select *
         from menu
     </select>
-    <delete id="deleteMenu">
+    <delete id="delete">
         delete
         from menu
         where id = #{id}
@@ -49,7 +51,7 @@
         select max(sequence)
         from menu
     </select>
-    <select id="getSibling" parameterType="Menu" resultType="Menu">
+    <select id="getSibling" resultType="Menu">
         select * from menu
         <where>
             <if test="parentId == null">
@@ -66,10 +68,5 @@
                  inner join role_menu_rel b on a.id = b.menu_id
                  inner join user_role_rel c on c.role_id = b.role_id
         where c.user_id = #{userId}
-    </select>
-    <select id="test" resultType="Menu">
-        select *
-        from menu
-        where id in #{arg}
     </select>
 </mapper>
