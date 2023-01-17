@@ -1,3 +1,13 @@
+mybatis:
+  type-aliases-package: cn.mgl.purity.model
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:db/mybatis/mapper/*.xml
+
+#server:
+#  port: 7777
+
 spring:
   mvc:
     format:
@@ -12,9 +22,3 @@ spring:
   #    add-mappings: false
   profiles:
     active: dev
-mybatis:
-  type-aliases-package: com.example.demo.model
-  configuration:
-    map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
-  mapper-locations: classpath:db/mybatis/mapper/*.xml

@@ -1,0 +1,25 @@
+package cn.mgl.purity.model.service.result;
+
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+import java.util.List;
+
+/**
+ * 列表结果工厂方法
+ */
+@Data
+@Accessors(chain = true)
+public class BaseListResult {
+    private Long total;
+    private List records;
+
+    public BaseListResult(Long total, List records) {
+        this.total = total;
+        this.records = records;
+    }
+
+    public static JsonResult success(List records, Long total) {
+        return new JsonResult(200, true, "获取列表成功", new BaseListResult(total, records));
+    }
+}

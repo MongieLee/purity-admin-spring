@@ -14,8 +14,8 @@ spring:
       password: 12345678
 
 # mybatis配置
-mybatis:
-  type-aliases-package: com.example.demo.model
+#mybatis:
+#  type-aliases-package: com.example.demo.model
 #  config-location: classpath:db/mybatis/mybatis-config.xml
 
 # mybatis分页插件

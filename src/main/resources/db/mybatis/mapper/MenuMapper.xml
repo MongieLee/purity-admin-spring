@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.dao.MenuDao">
+<mapper namespace="cn.mgl.purity.dao.MenuDao">
     <insert id="insert">
         insert into menu
         (name, path, comp_name, parent_id, menu_type, visible, `icon`, sequence, remark, permission, created_by,
