@@ -56,9 +56,6 @@ public class DepartmentService {
         if (null == getById(dep.getId())) {
             throw new ServiceBusinessException("该部门不存在");
         }
-        if (null != getByName(dep.getName())) {
-            throw new ServiceBusinessException("该部门已存在，修改失败");
-        }
         departmentDao.update(dep);
         return getById(dep.getId());
     }

@@ -46,7 +46,7 @@
     <update id="update">
         update t_department set
         <if test="name != null and name != ''">name = #{name},</if>
-        <if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
+        <if test="parentId == null and parentId != 0">parent_id = #{parentId},</if>
         <if test="sequence != null and sequence != 0">`sequence` = #{sequence},</if>
         <if test="principal != null and principal != ''">principal = #{principal},</if>
         <if test="phoneNumber != null and phoneNumber != ''">phone_number = #{phoneNumber},</if>
