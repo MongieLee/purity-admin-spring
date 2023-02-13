@@ -19,3 +19,6 @@ Docker启动容器，测试用没有持久化映射，需要的自行增加
 
 ## Swagger2接口文档
 项目启动后，访问 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+有与之搭配的前端项目（基于Vue3）<br/>
+地址：[https://github.com/MongieLee/purity-admin-vue3](https://github.com/MongieLee/purity-admin-vue3)
