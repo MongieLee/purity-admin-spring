@@ -22,11 +22,7 @@
     <mappers>
         <mapper resource="db/mybatis/mapper/UserMapper.xml"/>
         <mapper resource="db/mybatis/mapper/MenuMapper.xml"/>
-        <mapper resource="db/mybatis/mapper/ProjectMapper.xml"/>
-        <mapper resource="db/mybatis/mapper/ResourceMapper.xml"/>
-        <mapper resource="db/mybatis/mapper/ResourceCategroyMapper.xml"/>
         <mapper resource="db/mybatis/mapper/RoleMapper.xml"/>
         <mapper resource="db/mybatis/mapper/DepartmentMapper.xml"/>
-<!--        <package name="com.example.demo.dao"/>-->
     </mappers>
 </configuration>
