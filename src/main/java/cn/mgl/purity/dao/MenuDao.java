@@ -1,6 +1,7 @@
 package cn.mgl.purity.dao;
 
 import cn.mgl.purity.model.persistent.Menu;
+import org.mapstruct.Mapper;
 
 import java.util.List;
 
@@ -20,8 +21,6 @@ public interface MenuDao {
     List<Menu> getAll();
 
     int delete(Long id);
-
-    int findMaxSequence();
 
     List<Menu> getSibling(Menu menu);
 

@@ -22,11 +22,11 @@
             </snapshots>
         </repository>
     </repositories>
-    <groupId>com.example</groupId>
-    <artifactId>demo</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>demo</name>
-    <description>demo</description>
+    <groupId>cn.mgl</groupId>
+    <artifactId>purity</artifactId>
+    <version>1.0.0</version>
+    <name>purity</name>
+    <description>purity</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.2.5</version>
+            <version>1.3.1</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -142,7 +142,7 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>5.2.4</version>
                 <configuration>
-                    <url>jdbc:mysql://localhost:3306/demo?characterEncoding=UTF-8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true</url>
+                    <url>jdbc:mysql://localhost:3306/purity?characterEncoding=UTF-8&amp;useSSL=false&amp;allowPublicKeyRetrieval=true</url>
                     <user>root</user>
                     <password>12345678</password>
                 </configuration>

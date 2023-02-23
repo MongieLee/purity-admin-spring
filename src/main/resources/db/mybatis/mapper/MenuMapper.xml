@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.demo.dao.MenuDao">
-    <insert id="createMenu" parameterType="menu">
+<mapper namespace="cn.mgl.purity.dao.MenuDao">
+    <insert id="insert" parameterType="menu">
         insert into menu
         (name, path, parent_id, menu_type, visible, `icon`, sequence, remark, permission, created_by, created_at,
          updated_at, is_link, state)
         values (#{name}, #{path}, #{parentId}, #{menuType}, #{visible}, #{icon}, #{sequence}, #{remark}, #{permission},
                 #{createBy}, now(), now(), #{isLink}, #{state})
     </insert>
-    <update id="updateMenu" parameterType="menu">
+    <update id="update" parameterType="menu">
         update menu
         set `name`=#{name},
             `path`=#{path},
@@ -26,12 +26,12 @@
             `state`=#{state}
         where id = #{id}
     </update>
-    <select id="getMenuById" resultType="menu">
+    <select id="getById" resultType="menu">
         select *
         from menu
         where id = #{id}
     </select>
-    <select id="getMenuByName" resultType="Menu">
+    <select id="getByName" resultType="Menu">
         select *
         from menu
         where name = #{name}
@@ -40,7 +40,7 @@
         select *
         from menu
     </select>
-    <delete id="deleteMenu">
+    <delete id="delete">
         delete
         from menu
         where id = #{id}

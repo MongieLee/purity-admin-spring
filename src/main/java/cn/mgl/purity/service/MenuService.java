@@ -1,9 +1,9 @@
-package com.example.demo.service;
+package cn.mgl.purity.service;
 
-import com.example.demo.converter.p2s.MenuP2SConverter;
-import com.example.demo.dao.MenuDao;
-import com.example.demo.model.persistent.Menu;
-import com.example.demo.model.service.MenuDto;
+import cn.mgl.purity.converter.p2s.MenuP2SConverter;
+import cn.mgl.purity.dao.MenuDao;
+import cn.mgl.purity.model.persistent.Menu;
+import cn.mgl.purity.model.service.MenuDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +48,7 @@ public class MenuService {
             }
             menu.setSequence(sequence);
         }
-        menuDao.updateMenu(menu.setId(id));
+        menuDao.update(menu.setId(id));
         return getMenuById(menu.getId());
     }
 
@@ -60,11 +60,11 @@ public class MenuService {
         if (menuById.getChildren().size() > 0) {
             throw new RuntimeException("删除失败，请先删除【" + menuById.getName() + "】菜单下的子级菜单");
         }
-        menuDao.deleteMenu(id);
+        menuDao.delete(id);
     }
 
     public MenuDto findById(Long id) {
-        return menuP2SConverter.convert(menuDao.getMenuById(id));
+        return menuP2SConverter.convert(menuDao.getById(id));
     }
 
     public MenuDto createMenu(Menu menu) {
@@ -78,7 +78,7 @@ public class MenuService {
             }
         }
         menu.setSequence(sequence);
-        menuDao.createMenu(menu);
+        menuDao.insert(menu);
         return findById(menu.getId());
     }
 
@@ -106,7 +106,7 @@ public class MenuService {
     }
 
     public MenuDto getMenuByName(String name) {
-        return menuP2SConverter.convert(menuDao.getMenuByName(name));
+        return menuP2SConverter.convert(menuDao.getByName(name));
     }
 
     public List<MenuDto> tree() {
@@ -162,8 +162,8 @@ public class MenuService {
         }
         menu.setSequence(Objects.requireNonNull(replace).getSequence());
         replace.setSequence(target);
-        menuDao.updateMenu(replace);
-        menuDao.updateMenu(menu);
+        menuDao.update(replace);
+        menuDao.update(menu);
     }
 
     public void moveDown(Menu menu) {
@@ -183,8 +183,8 @@ public class MenuService {
         }
         menu.setSequence(Objects.requireNonNull(replace).getSequence());
         replace.setSequence(target);
-        menuDao.updateMenu(replace);
-        menuDao.updateMenu(menu);
+        menuDao.update(replace);
+        menuDao.update(menu);
     }
 
     public void moveToStar(Menu menu) {
@@ -194,7 +194,7 @@ public class MenuService {
         if (Objects.equals(first.getId(), menu.getId())) {
             throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是第一位");
         }
-        menuDao.updateMenu(menu.setSequence(first.getSequence() - 1));
+        menuDao.update(menu.setSequence(first.getSequence() - 1));
 
     }
 
@@ -206,7 +206,7 @@ public class MenuService {
         if (Objects.equals(first.getId(), menu.getId())) {
             throw new RuntimeException("当前菜单层级中，【" + menu.getName() + "】已是最后一位");
         }
-        menuDao.updateMenu(menu.setSequence(first.getSequence() + 1));
+        menuDao.update(menu.setSequence(first.getSequence() + 1));
     }
 
 

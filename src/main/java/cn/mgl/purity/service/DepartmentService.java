@@ -14,11 +14,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * @author MongieLee
- * @version 1.0
- * @date 2022/12/1 14:32
- */
 @Service
 public class DepartmentService {
     private final DepartmentDao departmentDao;

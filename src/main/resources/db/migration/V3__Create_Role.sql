@@ -13,4 +13,4 @@ create table role
   COLLATE = utf8mb4_unicode_ci;
 
 insert into role (id, name, state, code, description, created_at, updated_at)
-values (1, '管理员', 'admin', 1, '系统管理员，拥有系统全部权限', now(), now());
+values (1, '管理员',1, 'admin', '系统管理员，拥有系统全部权限', now(), now());

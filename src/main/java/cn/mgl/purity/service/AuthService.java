@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS)
+@Transactional
 public class AuthService {
     private final UserService userService;
 
