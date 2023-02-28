@@ -1,4 +1,6 @@
-create table role
+drop table if exists `role`;
+
+create table `role`
 (
     id          int primary key auto_increment,
     name        varchar(20),

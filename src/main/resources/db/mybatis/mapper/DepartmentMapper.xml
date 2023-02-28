@@ -12,7 +12,7 @@
                state,
                created_at,
                updated_at
-        from t_department
+        from department
     </sql>
     <select id="getAll" resultType="department">
         <include refid="base_select"/>
@@ -26,7 +26,7 @@
         where name = #{name}
     </select>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        insert into t_department(
+        insert into department(
         <if test="name != null and name != ''">name,</if>
         <if test="parentId != null and parentId != 0">parent_id,</if>
         <if test="sequence != null and sequence != 0">sequence,</if>
@@ -44,7 +44,7 @@
         now(),now())
     </insert>
     <update id="update">
-        update t_department set
+        update department set
         <if test="name != null and name != ''">name = #{name},</if>
         <if test="parentId == null and parentId != 0">parent_id = #{parentId},</if>
         <if test="sequence != null and sequence != 0">`sequence` = #{sequence},</if>
@@ -55,7 +55,7 @@
     </update>
     <delete id="delete">
         delete
-        from t_department
+        from department
         where id = #{deptId}
     </delete>
 </mapper>

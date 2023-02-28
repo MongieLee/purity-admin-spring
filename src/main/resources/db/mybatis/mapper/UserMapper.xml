@@ -33,7 +33,7 @@
         select
         a.id,a.username,a.encrypted_password,a.dept_id,a.nickname,a.avatar,a.`status`,a.created_at,b.updated_at,c.`name`
         role_name,c.id role_id,d.name dept_name from user a left join user_role_rel b on a.id = b.user_id LEFT JOIN role
-        c on b.role_id = c.id left join t_department d on d.id = a.dept_id
+        c on b.role_id = c.id left join department d on d.id = a.dept_id
         <where>
             <if test="username != null and username !=''">username like concat('%',#{username},'%')</if>
             <if test="deptId != null">and dept_id = #{deptId}</if>

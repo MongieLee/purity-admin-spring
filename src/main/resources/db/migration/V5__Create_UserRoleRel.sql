@@ -1,4 +1,6 @@
-create table user_role_rel
+drop table if exists `user_role_rel`;
+
+create table `user_role_rel`
 (
     user_id    int,
     role_id    int,

@@ -1,6 +1,6 @@
-drop table if exists t_department;
+drop table if exists `department`;
 
-create table t_department
+create table `department`
 (
     id           int auto_increment,
     name         varchar(40),
@@ -16,7 +16,7 @@ create table t_department
 ) comment '部门表' collate = utf8mb4_unicode_ci;
 
 
-insert into t_department(name, parent_id, principal, phone_number, sequence, state, created_at, updated_at)
+insert into `department`(name, parent_id, principal, phone_number, sequence, state, created_at, updated_at)
 values ('技术研发部', null, 'Lei', '13112311212', 1, b'1', now(), now());
 
 # insert into t_department(name, parent_id, principal, phone_number, sequence, state, created_at, updated_at)
